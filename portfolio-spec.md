@@ -90,7 +90,7 @@ STATE MANAGEMENT:
     - ZUSTAND (v4+)
 
 ROUTING:
-    - React Router DOM (v6+)
+    - React Router (v6+) / react-router-dom (v6+)
 
 FORMS:
     - react-hook-form (v7+)
@@ -208,4 +208,218 @@ EMAIL
 - Resend Free Tier 
 
 
+
+TESTING
+------------
+
+- Frontend: React Testing Library (v14+) with Jest (v29+)
+- Backend: Supertest (v6+) with Jest (v29+)
+
+
+============================================================================================
+LOCAL DEVELOPMENT REQUIREMENTS
+============================================================================================
+
+    - Node.js (v18+)
+    - MongoDB Atlas Account (with Vector Search enabled)
+    - Docker (optional, for containerized development)
+    - Git 
+    - VS Code or preferred code editor
+    - Postman or similar API testing tool
+
+
+RUNNING PORTS
+------------------
+
+Frontend:
+    - http://localhost:5173
+
+Backend:
+    - http://localhost:5000
+
+MONGODB:
+    - localhost:27017 (for local MongoDB) or Atlas connection string for cloud database
+
+
+
+============================================================================================
+FINAL PROJECT STRUCTURE
+============================================================================================
+
+
+
+manish-portfolio/
+│
+├── client/                 # Strictly Frontend (React/Vite, Tailwind, Zustand)
+│   ├── public/             
+│   ├── src/
+│   │   ├── assets/         # Crucial: Store all UI GIFs and architecture diagrams here for quick recruiter scanning
+│   │   ├── components/     # Reusable UI (TechBadge, ChatWidget, ProjectCard)
+│   │   ├── layouts/        # Global layout wrappers (Navigation, Footer)
+│   │   ├── pages/          # Main views (LandingPage, ProjectDetail)
+│   │   ├── store/          # Zustand state slices (e.g., chatState.js)
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utility functions and API clients (Axios)
+│   │   ├── App.jsx         # Root component and dynamic routing
+│   │   └── main.jsx        # Entry point
+│   ├── package.json
+│   └── tailwind.config.js
+│
+server/                 # Strictly Backend (Node.js, Express, MongoDB, LangChain)
+├── src/
+│   ├── config/         # DB connections, Gemini API keys, environment variables
+│   ├── controllers/    # Route logic (parsing req/res, calling services)
+│   ├── models/         # Mongoose schemas
+│   ├── routes/         # Express API endpoints
+│   ├── middleware/     # Error handling, CORS, request validation (Zod)
+│   ├── services/       # Core business logic and external integrations
+│   │   └── rag/        # Dedicated RAG module
+│   │       ├── embeddings.js   # Handles vector generation
+│   │       ├── indexer.js      # Handles data chunking and ingestion
+│   │       ├── rag.service.js  # Main orchestrator for the RAG pipeline
+│   │       └── vector-store.js # Handles vector database operations
+│   └── app.js          # Express app configuration and middleware setup
+├── package.json
+├── .env
+└── server.js           # Network entry point (app.listen)
+|- server/data/resume.md         # Markdown file containing resume data for RAG indexing (inside /server/data/)
+|- server/data/projects.md       # Markdown file containing project details for RAG indexing (inside /server/data/)
+|- server/data/hiring-preferences.md # Markdown file containing hiring preferences for RAG indexing (inside /server/data/)
+|- server/data/skills.md         # Markdown file containing skills data for RAG indexing (inside /server/data/)
+
+
+
+============================================================================================
+MANDATORY IMPLEMENTATIONS RULES 
+============================================================================================
+
+
+CLIENT FOLDER IMPLEMENTATION
+---------
+
+The entire frontend application must be implemented Only inside:
+
+`/client`
+
+This Includes:
+    - Vite configuration
+    - pages/routes (e.g., LandingPage.jsx, ProjectDetail.jsx)
+    - UI components
+    - Zustand state management 
+    - Tailwind styling
+    - shadcn/ui components
+    - lucide-react icons
+    - frontend API client logic (e.g., Axios calls to the Express backend)
+    - form handling with react-hook-form and ZOD (e.g., contact form validation)
+    - framer-motion animations
+    - RAG agent interaction logic (e.g., chat interface state management, message rendering)
+    - detailed Page of each project with visual evidence (GIFs, architecture diagrams) and minimal text
+
+
+
+
+----------------------------------------------------------------------------------------
+
+SERVER FOLDER IMPLEMENTATION
+---------
+
+The Entire backend application must be implemented Only inside:
+
+`/server`
+
+
+This includes: 
+    CORE INFRASTRUCTURE:
+     - Express Setup: Server configuration, API routes, and modular controllers.
+     - Database: Mongoose schemas and MongoDB connection logic.
+     - Security & Config: CORS, Helmet, centralized error-handling middleware, and dotenv management.
+     - Email Service: Resend API integration for contact form submissions.
+     - ENVIRONMENT CONFIGURATION: Centralized management of all `env variables` (eg., MONGODB_URI, GEMINI_API_KEY, RESEND_API_KEY) in a `.env` file with secure access patterns. Make a `env.js` module to abstract and validate environment variable access across the backend codebase.
+
+    RAG and AI SERVICE(/server/src/services/rag/)
+        - embeddings.js: Generate vectors using Google Gemini Embedding API (@google/generative-ai).
+        - indexer.js: Chunk markdown files/chat queries, trigger embeddings, and pipeline data to the database.
+        - vector-store.js: Handle all MongoDB Atlas Vector Search interactions (store new embeddings, execute similarity searches).
+        - rag.service.js: Central orchestrator (receives query → fetches context via vector-store → generates LangChain LLM response → returns to client).
+    
+    DATA SOURCES FOR RAG (/server/data/): 
+        - resume.md: Contains structured markdown data of the candidate's resume for indexing.
+        - projects.md: Contains detailed markdown descriptions of each project for indexing.
+        - hiring-preferences.md: Contains markdown data outlining the candidate's ideal job criteria for indexing.
+        - skills.md: Contains markdown data listing the candidate's technical skills and proficiencies for indexing.
+
+    
+
+
+------------------------------------------------------------------------------------------------
+
+STRICT RULES 
+-----------------
+
+1. NEVER create additional frontend/backend root directories 
+2. Always use:
+        `/client`
+        `/server`
+3. All frontend code Must remain inside:
+        `/client`
+4. All backend code Must remain inside:
+        `/server`
+5. Shared resume, projects, skills and hiring preferences data for RAG indexing must be stored as markdown files inside:
+        `/server/data/`
+
+6. Mongoose models MUST exist inside:
+        `/server/src/models/`
+7. Environment variable management and access abstraction MUST be implemented inside:
+        `/server/src/config/env.js`
+8. RAG-specific logic and integrations MUST be implemented inside:
+        `/server/src/services/rag/`
+
+
+
+============================================================================================
+
+HOW USER or VISITOR INTERACTIONS WORK
+============================================================================================
+
+
+1. VISITOR LANDING & EXPLORATION FLOW-
+    - The Hook: A recruiter or client lands on the homepage and instantly sees technical expertise communicated through visual evidence (UI GIFs, architecture diagrams) with minimal text.
+
+    - The Deep-Dive: The visitor clicks a project card, navigating to a dynamic detail page formatted as technical documentation (Problem -> Solution -> Impact). 
+
+2. AI RAG CHATBOT FLOW
+    - Query Initiation: The visitor asks a question (e.g., "What is your MERN experience?") via the floating UI widget.
+    - API Request: The frontend captures the input and sends a POST request to the Express backend (e.g., /api/chat).
+    - Orchestration (rag.service.js): The backend routes the query to the RAG service orchestrator.
+    - Vector Retrieval (vector-store.js): The system performs a cosine similarity search against the MongoDB Atlas vector index to pull relevant context (from your resume and project specs).
+    - LLM Generation: The retrieved context and user query are passed to the Gemini LLM (via @google/generative-ai) using a strict prompt template to prevent hallucinations.
+    - Response Delivery: The backend formats the LLM output and returns a JSON response to the frontend, instantly updating the chat UI.
+
+
+3. LEAD GENERATION FLOW
+    - Contact Submission: The visitor fills out the minimal contact form (Name, Email, Message) to request a freelance build or interview.
+
+    - Email Dispatch: The backend receives the payload, validates it via Zod, and triggers the Resend API to deliver the email directly to you.
+
+
+
+
+
+
+============================================================================================
+REQUIRED FRONTEND ROUTES & PAGES
+============================================================================================
+
+
+1. APPLICATION ROUTES (React Router)
+    - `/`: Main Landing Page (Single Page layout containing About, Skills, Projects, and Contact sections).
+    - `/projects/:projectId`: Dynamic Project Detail Page (Deep-dive documentation for a specific project).
+2. Header NAVIGATION (Smooth scroll Anchors)
+
+When a user clicks on the header links, the app MUST smoothly scroll to the respective section ID on the Home Page (/):
+
+    - `/about` - Scrolls to About/Value Proposition section.
+    - `/skills` - Scrolls to Tech Arsenal/Skills section.
+    - `/projects` - Scrolls to the Featured Case Studies/Projects grid section.
+    - `/contact` - Scrolls to the Contact Form/Footer.
 
