@@ -423,3 +423,281 @@ When a user clicks on the header links, the app MUST smoothly scroll to the resp
     - `/projects` - Scrolls to the Featured Case Studies/Projects grid section.
     - `/contact` - Scrolls to the Contact Form/Footer.
 
+
+
+
+
+============================================================================================
+REQUIRED BACKEND API ENDPOINTS
+============================================================================================
+
+
+CHAT & RAG ROUTES
+-------------------
+
+POST `api/chat`
+    - Purpose: Handle all RAG chatbot interactions.
+    - Payload: {"message": "User's chat query"}
+    - Action: Receives query, triggers `rag.service.js` to fetch context from MongoDB Atlas.
+
+LEAD GENERATION ROUTES
+------------------------
+
+POST `api/contact`
+
+    - PURPOSE: Handles freelance/recruiter contact form submissions.
+    - Payload: {"name": "....", "email": "...", "message": "..."}
+    - Action: Validates payload using zod and dispatches email directly to the owner using the Resend API.
+
+PROJECT DATA ROUTES (SPEC-DRIVEN)
+-------------------------------------
+
+GET `api/projects`
+    - Purpose: Fetches all project configurations data from the backend to populate the frontend project grid.
+
+GET `api/projects/:projectId`
+    - Purpose: Fetches deep-dive documentation (Problem -> Solution -> Impact) for a single dynamic project page based on the projectId parameter.
+
+
+
+===============================================================================================
+REQUIRED DATA SCHEMAS (SPEC-DRIVEN DEVELOPMENT)
+===============================================================================================
+
+
+
+IMPORTANT RULE:
+All frontend UI components (cards, detail pages) MUST be populated dynamically using these data structures. Do not hardcode project names, descriptions, or tech stacks in React components.
+
+
+------------------------------------
+1. PROJECT CONFIGURATION SCHEMA (JSON)
+------------------------------------
+
+
+Location: Sent via GET /api/projects from backend.
+
+IMPORTANT RULE:
+
+The frontend UI MUST implement a filtering mechanism based on the `category` field (MERN, n8n, NxtWave). All images MUST use the provided Cloudinary URLs.
+
+
+Structure Example:
+[
+  {
+    "id": "chat-app",
+    "category": "MERN Stack",
+    "title": "Chatrivo Ecosystem",
+    "summary": "A production-grade real-time messaging platform built on a robust MERN backbone.",
+    "tech_stack": ["React", "Socket.io", "Node.js", "MongoDB", "Zustand"],
+    "deep_dive": {
+      "problem": "...",
+      "solution": "...",
+      "impact": "...",
+      "visual_evidence": {
+        "architecture_diagram": "PASTE_YOUR_CLOUDINARY_URL_HERE",
+        "demo_gif": "PASTE_YOUR_CLOUDINARY_URL_HERE"
+      }
+    }
+  },
+  {
+    "id": "gmail-management-agent",
+    "category": "n8n Automations",
+    "title": "AI Powered Gmail Management AI Agent",
+    "summary": "Automated email classification and workflow routing using Gemini and n8n.",
+    "tech_stack": ["n8n", "Google Gemini API", "Webhooks", "JavaScript"],
+    "deep_dive": {
+      "problem": "...",
+      "solution": "...",
+      "impact": "...",
+      "visual_evidence": {
+        "architecture_diagram": "PASTE_YOUR_CLOUDINARY_URL_HERE_FROM_IMAGE",
+        "demo_gif": "PASTE_YOUR_CLOUDINARY_URL_HERE"
+      }
+    }
+  },
+  {
+    "id": "jobby-app",
+    "category": "NxtWave Frontend",
+    "title": "Jobby App",
+    "summary": "A comprehensive job search platform focusing on complex UI state and routing.",
+    "tech_stack": ["ReactJS", "Tailwind CSS", "REST APIs"],
+    "deep_dive": {
+      "problem": "...",
+      "solution": "...",
+      "impact": "...",
+      "visual_evidence": {
+        "architecture_diagram": "PASTE_YOUR_CLOUDINARY_URL_HERE",
+        "demo_gif": "PASTE_YOUR_CLOUDINARY_URL_HERE"
+      }
+    }
+  }
+]
+
+
+-------------------------
+2. RAG CONTEXT DATA (MARKDOWN)
+--------------------------
+
+Location: `server/data/[cite: 2]`
+
+These files are STRICTLY used for Vector Indexing and RAG Chatbot context, NOT for rendering the UI.
+- resume.md: Contains education, certifications (Google Cloud GenAI, MCP), and work history[cite: 2].
+- skills.md: Contains detailed lists of MERN and AI automation proficiencies[cite: 2].
+- hiring-preferences.md: Contains ideal freelance client profiles and service offerings[cite: 2].
+- projects.md: Contains narrative descriptions of projects for the AI to answer conversational queries[cite: 2].
+
+
+
+================================================================================================
+ASSET MANAGEMENT & CLOUDINARY INTEGRATION
+================================================================================================
+
+
+ASSET DELIVERY RULES:
+    - NO heavy media files (GIFs, Videos, Architecture Diagrams) will be stored locally in the frontend or backend repositories.
+    - ALL visual evidence must be delivered via Cloudinary URLs to ensure rapid page loading and to satisfy the 10-second scan rule.
+
+FRONTEND IMPLEMENTATION RULES:
+    - 1. Lazy Loading: All visual assets fetched from Cloudinary MUST implement native `loading="lazy"` attributes.
+    - 2. Fallback States: UI components (like <ProjectCard> and the Project Detail gallery) must include a clean, CSS-based skeleton loader or placeholder that displays while the Cloudinary asset is resolving.
+    - 3. Aspect Ratios: Always enforce strict aspect ratios (e.g., `aspect-video` in Tailwind) on image containers to prevent Cumulative Layout Shift (CLS) when Cloudinary images load.
+
+UPDATED DATA SCHEMA REQUIREMENT:
+    The `visual_evidence` object in the Project Configuration JSON must strictly use secure Cloudinary URLs (`https://res.cloudinary.com/...`).
+
+
+Example:
+"visual_evidence": {
+  "architecture_diagram": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234/portfolio/chatrivo-arch.png",
+  "demo_gif": "https://res.cloudinary.com/your-cloud-name/video/upload/v1234/portfolio/chatrivo-demo.gif"
+}
+
+
+
+
+
+================================================================================================
+SECURITY, VALIDATION & ENVIRONMENT MANAGEMENT
+================================================================================================
+
+1. ENVIRONMENT VARIABLES VALIDATION:
+    - Abstraction Rule: The backend Application `MUST NEVER` Access `process.env` directly outside the file, create a centralized `env.js` file and configure all `env variable` and access env var through exported variable. 
+
+ Example:
+    // server/src/config/env.js
+    {
+        process.env.MONGODB_URI || throw new Error("MONGODB_URI is required"),
+        process.env.GEMINI_API_KEY || throw new Error("GEMINI_API_KEY is required"),
+        process.env.RESEND_API_KEY || throw new Error("RESEND_API_KEY is required"),
+        process.env.PORT || 5000 || throw new Error("PORT is required"),
+        process.env.NODE_ENV || "development", 
+        process.env.CORS_ORIGIN || throw new Error("CORS_ORIGIN is required"), 
+        process.env.CLIENT_URL || throw new Error("CLIENT_URL is required"), 
+    }
+
+
+    - Validation Schema: Use Zod (zod) to strictly parse and validate the runtime environment configuration.
+
+    - Required Variables: 
+        - PORT: Number, default 5000
+        - MONGODB_URI: String (MongoDB connection string)
+        - GEMINI_API_KEY: String (Google Gemini API key)
+        - RESEND_API_KEY: String (Resend API key for email dispatch)
+        - CORS_ORIGIN: String (Allowed origin for CORS, e.g., http://localhost:5173)
+        - CLIENT_URL: String (URL of the frontend application, e.g., http://localhost:5173) 
+    - Failure Behavior: If any variable fails validation at startup, the process must immediately log the validation error and terminate (process.exit(1)).
+
+
+2. REQUEST VALIDATION MIDDLEWARE: 
+    - Zod Enforcement: All incoming payload bodies for public write routes MUST be strictly validated via Zod schemas before hitting the controllers.
+
+    - `api/chat` Schema: Validate that message exist, is a string, is not empty, and does not exceed a safe maximum character length `(e.g. 500 characters)`. to save LLM tokens and prevent abuse. 
+
+    - `/api/contact` Schema: Validate that name (string), email (valid email string), and message (string) are all prevent and formatted correctly.
+
+
+3. RATE LIMITING & PUBLIC ENDPOINT PROTECTION:
+    - Express Rate Limiting: Implement `express-rate-limit` globally on all public routes to prevent script spam and API cost inflation.
+
+    - Chat Limit: Restrict the `/api/chat` endpoint to a maximum of 15 request per 15 minute window per IP address.
+
+    - Contact Form Limit: Restrict the `/api/contact` endpoint to a maximum of 3 requests per hour per IP address to prevent spam.
+
+
+
+4. HTTP SECURITY HEADERS:
+
+    - Helmet integration: Mount the helmet middleware layer to automatically apply secure, standard HTTP headers across all server 
+        transactions.
+    
+    - CORS Constraints: Configure the Cross-Origin Resource Sharing (cors) policy strictly to authorize inbound traffic exclusively from your trusted frontend origin domain (http://localhost:5173 during local builds)
+
+
+
+
+
+============================================================================================
+MANDATORY AI AGENT GENERATION RULES
+============================================================================================
+
+
+
+1. `USE JavaScript (ES6+) ONLY`: The AI is strictly forbidden from writing or introducing TypeScript (.ts/.tsx) anywhere in the workspace[cite: 4, 5].
+
+2. `USE Modular Express Architecture ONLY`: All backend services must follow the defined src/ structure (controllers, routes, services, models)[cite: 4, 5].
+
+3. `NO ORMS/ODMS OUTSIDE MONGOOSE`: Never generate schemas or query engines using Prisma, Sequelize, or NestJS structures.
+
+4. `ALL Business Logic MUST be Spec-Driven`: No project attributes, filtering categories, or validation thresholds may be hardcoded inside UI views[cite: 4, 5].
+
+5. `ALWAYS Return Structured JSON`: Every backend response—including error states—must return a predictable JSON payload[cite: 4, 5].
+
+6. `NO SKIPPING VALIDATION`: All public payload ingestion endpoints (/api/chat, /api/contact) MUST execute Zod validation parsing prior to controller execution[cite: 4, 5].
+
+7. `DUMB FRONTEND PRINCIPLE`: The React UI must never execute Gemini embeddings or direct database transactions; it is strictly a visual consumer.
+
+
+
+
+============================================================================================
+FAILURE HANDLING & SYSTEM RESILIENCE
+============================================================================================
+
+RETRYABLE FAILURES (Implement Exponential Backoff / Max 3 Retries):
+    - Google Gemini API timeouts or rate limits (HTTP 429/503)[cite: 5].
+    - Resend Email API network timeouts[cite: 5].
+    - MongoDB Atlas Vector database connectivity drops[cite: 5].
+
+NON-RETRYABLE FAILURES (Fail Immediately and Bubble Error up to Client):
+    - Empty or malformed request payloads[cite: 5].
+    - Invalid email formats passing through /api/contact[cite: 4, 5].
+    - Zod validation schema rejections[cite: 4, 5].
+
+MANDATORY LOGGING FORMAT:
+
+Every single system catch block must pass errors to the global error-handling middleware, logging a structured terminal message containing:
+
+{
+  "timestamp": "ISO-8601 String",
+  "layer": "ROUTE | CONTROLLER | SERVICE | MODEL",
+  "module": "e.g., rag.service.js",
+  "error_message": "error.message",
+  "stack_trace": "error.stack"
+}[cite: 4, 5]
+
+
+
+============================================================================================
+PORTFOLIO SUCCESS CRITERIA
+============================================================================================
+
+
+The implementation is defined as strictly successful ONLY if:
+
+1. The frontend initiates entirely on http://localhost:5173 without static file layout shifts.
+2. The backend boots cleanly on http://localhost:5000 and successfully passes environment variable checks via env.js[cite: 4].
+3. The Project Configuration JSON schema perfectly filters projects into MERN, n8n, and NxtWave categories dynamically in the view layer[cite: 4]
+4. The floating chat widget successfully streams input to /api/chat and securely renders the context-injected response[cite: 4].
+5. Submitting the contact form hits /api/contact, passes Zod validation, and executes a verified email dispatch via Resend[cite: 4].
+
