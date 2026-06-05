@@ -1,12 +1,14 @@
 /**
  * @file layouts/MainLayout.jsx
  * @description Semantic page wrapper. Composes Header → <Outlet> → Footer.
+ * ChatWidget is mounted here so it is globally available on ALL routes.
  * Zero business logic lives here — purely structural.
  */
 
 import { Outlet } from "react-router-dom";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Header     from "@/components/layout/Header";
+import Footer     from "@/components/layout/Footer";
+import ChatWidget from "@/components/ui/ChatWidget";
 
 export default function MainLayout() {
   return (
@@ -16,6 +18,9 @@ export default function MainLayout() {
         <Outlet />
       </main>
       <Footer />
+
+      {/* Floating AI assistant — fixed position, available on all pages */}
+      <ChatWidget />
     </div>
   );
 }

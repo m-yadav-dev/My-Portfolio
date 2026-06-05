@@ -1,27 +1,22 @@
 /**
  * @file controllers/contact.controller.js
- * @description Handles POST /api/contact — lead generation endpoint.
+ * @description POST /api/contact — lead generation handler.
  *
- * FLOW:
- *   1. Parse & validate request body with Zod (fail-fast on bad input)
- *   2. Send email via Resend API
- *   3. Return spec-mandated { success, data, error } JSON
+ * SPEC RESPONSIBILITY (SoC — after refactor):
+ *   1. Parse & validate req.body with Zod  (controller concern)
+ *   2. Delegate email dispatch to email.service.js  (service concern)
+ *   3. Format and return { success, data, error } response  (controller concern)
  *
- * SPEC RATE LIMIT: 3 requests / hour / IP — enforced in contact.routes.js
- * SPEC RETRY: Resend network errors → exponential backoff, max 3 attempts
- * SPEC LOGGING: Every catch block emits structured JSON log
+ * DOES NOT: know about Resend, retry logic, or HTML templates.
  */
 
 "use strict";
 
 const { z } = require("zod");
-const { Resend } = require("resend");
-const env = require("../config/env");
-
-const resend = new Resend(env.RESEND_API_KEY);
+const { sendContactEmail } = require("../services/resend/email.service");
 
 // ---------------------------------------------------------------------------
-// Zod validation schema — spec: name, valid email, non-empty message
+// Zod validation schema — mirrors client-side schema exactly
 // ---------------------------------------------------------------------------
 const contactSchema = z.object({
   name: z
@@ -38,28 +33,10 @@ const contactSchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
-// Exponential backoff helper — spec: retryable failures, max 3 attempts
-// ---------------------------------------------------------------------------
-async function withRetry(fn, maxAttempts = 3) {
-  let lastError;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      return await fn();
-    } catch (err) {
-      lastError = err;
-      if (attempt < maxAttempts) {
-        await new Promise((r) => setTimeout(r, 2 ** attempt * 300)); // 600ms, 1.2s
-      }
-    }
-  }
-  throw lastError;
-}
-
-// ---------------------------------------------------------------------------
 // POST /api/contact
 // ---------------------------------------------------------------------------
-const sendContactEmail = async (req, res) => {
-  // 1. Validate payload — NON-RETRYABLE per spec
+const handleContactSubmission = async (req, res) => {
+  // 1. Validate — non-retryable, fail fast
   const parsed = contactSchema.safeParse(req.body);
   if (!parsed.success) {
     const message = parsed.error.errors.map((e) => e.message).join(" ");
@@ -70,34 +47,15 @@ const sendContactEmail = async (req, res) => {
     });
   }
 
-  const { name, email, message } = parsed.data;
-
-  // 2. Dispatch email via Resend — RETRYABLE (network issues)
+  // 2. Delegate to email service — retries handled inside service
   try {
-    const result = await withRetry(() =>
-      resend.emails.send({
-        from: "Portfolio Contact <onboarding@resend.dev>", // use verified domain in prod
-        to: ["manishyaduvanshi8294@gmail.com"],            // your inbox
-        replyTo: email,
-        subject: `[Portfolio] New message from ${name}`,
-        html: `
-          <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-            <h2 style="color:#111">New portfolio inquiry</h2>
-            <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
-            <hr style="border:1px solid #eee"/>
-            <p style="white-space:pre-wrap">${message}</p>
-            <hr style="border:1px solid #eee"/>
-            <p style="font-size:12px;color:#888">Sent via manish.dev contact form</p>
-          </div>
-        `,
-      })
-    );
+    const { id } = await sendContactEmail(parsed.data);
 
     return res.status(200).json({
       success: true,
       data: {
         message: "Email dispatched successfully via Resend.",
-        ticket_id: result?.data?.id ?? null,
+        ticket_id: id,
       },
       error: null,
     });
@@ -121,4 +79,4 @@ const sendContactEmail = async (req, res) => {
   }
 };
 
-module.exports = { sendContactEmail };
+module.exports = { handleContactSubmission };

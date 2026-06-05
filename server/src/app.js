@@ -24,6 +24,7 @@ const env     = require("./config/env"); // SPEC: never use process.env directly
 
 const projectRoutes = require("./routes/project.routes");
 const contactRoutes = require("./routes/contact.routes");
+const chatRoutes    = require("./routes/chat.routes");
 
 const app = express();
 
@@ -60,7 +61,7 @@ app.use(express.urlencoded({ extended: false }));
 // ---------------------------------------------------------------------------
 app.use("/api/projects", projectRoutes);
 app.use("/api/contact", contactRoutes);
-// Phase 5B: app.use("/api/chat", chatRoutes);
+app.use("/api/chat",    chatRoutes);
 
 // ---------------------------------------------------------------------------
 // 6. Health-check route
