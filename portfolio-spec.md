@@ -69,8 +69,10 @@ NEVER HARD-CODE ANY BUSINESS LOGIC OR FUNCTIONALITY.
 
 
 ===========================================================================================
-FINAL TECHNICAL STACK
+FINAL TECHNICAL STACK (STRICTLY MERN + AI INTEGRATIONS)
 ===========================================================================================
+
+
 
 FRONTEND TECH STACK:
 ----------
@@ -234,10 +236,10 @@ LOCAL DEVELOPMENT REQUIREMENTS
 RUNNING PORTS
 ------------------
 
-Frontend:
+Client:
     - http://localhost:5173
 
-Backend:
+Server:
     - http://localhost:5000
 
 MONGODB:
@@ -489,22 +491,24 @@ Structure Example:
 [
   {
     "id": "chat-app",
+    "card_thumbnail": "https://res.cloudinary.com/placeholder/chat-app-thumbnail-will-go-here",
     "category": "MERN Stack",
     "title": "Chatrivo Ecosystem",
     "summary": "A production-grade real-time messaging platform built on a robust MERN backbone.",
-    "tech_stack": ["React", "Socket.io", "Node.js", "MongoDB", "Zustand"],
+    "tech_stack": ["React", "Socket.io", "Node.js", "MongoDB", "Zustand", "n8n"],
     "deep_dive": {
       "problem": "...",
       "solution": "...",
       "impact": "...",
       "visual_evidence": {
-        "architecture_diagram": "PASTE_YOUR_CLOUDINARY_URL_HERE",
-        "demo_gif": "PASTE_YOUR_CLOUDINARY_URL_HERE"
+        "architecture_diagram": "https://res.cloudinary.com/placeholder/architecture-diagram-will-go-here",
+        "demo_gif": "https://res.cloudinary.com/placeholder/project-demo-gif-will-go-here"
       }
     }
   },
   {
     "id": "gmail-management-agent",
+    "card_thumbnail": "https://res.cloudinary.com/placeholder/gmail-agent-thumbnail-will-go-here",
     "category": "n8n Automations",
     "title": "AI Powered Gmail Management AI Agent",
     "summary": "Automated email classification and workflow routing using Gemini and n8n.",
@@ -514,13 +518,14 @@ Structure Example:
       "solution": "...",
       "impact": "...",
       "visual_evidence": {
-        "architecture_diagram": "PASTE_YOUR_CLOUDINARY_URL_HERE_FROM_IMAGE",
-        "demo_gif": "PASTE_YOUR_CLOUDINARY_URL_HERE"
+        "architecture_diagram": "https://res.cloudinary.com/placeholder/architecture-diagram-will-go-here",
+        "demo_gif": "https://res.cloudinary.com/placeholder/project-demo-gif-will-go-here"
       }
     }
   },
   {
     "id": "jobby-app",
+    "card_thumbnail": "https://res.cloudinary.com/placeholder/jobby-app-thumbnail-will-go-here",
     "category": "NxtWave Frontend",
     "title": "Jobby App",
     "summary": "A comprehensive job search platform focusing on complex UI state and routing.",
@@ -530,8 +535,8 @@ Structure Example:
       "solution": "...",
       "impact": "...",
       "visual_evidence": {
-        "architecture_diagram": "PASTE_YOUR_CLOUDINARY_URL_HERE",
-        "demo_gif": "PASTE_YOUR_CLOUDINARY_URL_HERE"
+        "architecture_diagram": "https://res.cloudinary.com/placeholder/architecture-diagram-will-go-here",
+        "demo_gif": "https://res.cloudinary.com/placeholder/project-demo-gif-will-go-here"
       }
     }
   }
@@ -572,8 +577,8 @@ UPDATED DATA SCHEMA REQUIREMENT:
 
 Example:
 "visual_evidence": {
-  "architecture_diagram": "https://res.cloudinary.com/your-cloud-name/image/upload/v1234/portfolio/chatrivo-arch.png",
-  "demo_gif": "https://res.cloudinary.com/your-cloud-name/video/upload/v1234/portfolio/chatrivo-demo.gif"
+  "architecture_diagram": "https://res.cloudinary.com/placeholder/architecture-diagram-will-go-here",
+  "demo_gif": "https://res.cloudinary.com/placeholder/project-demo-gif-will-go-here"
 }
 
 

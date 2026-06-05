@@ -1,0 +1,152 @@
+/* =============================================================================
+   GLOBAL STYLES — Manish Yadav Portfolio
+   SPEC: "strict minimalist dark-mode aesthetic (deep obsidian #0A0A0A)"
+   shadcn/ui CSS variable convention — hsl values WITHOUT the hsl() wrapper
+   ============================================================================= */
+
+/* Google Fonts — Inter (body) + JetBrains Mono (code) */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------------------------------------------------------------- */
+/* DESIGN TOKENS — Dark mode (default, only mode per spec)                    */
+/* -------------------------------------------------------------------------- */
+@layer base {
+  :root {
+    /* Obsidian dark palette */
+    --background: 0 0% 4%;          /* #0A0A0A — spec "deep obsidian" */
+    --foreground: 0 0% 95%;         /* near-white text */
+
+    --card: 0 0% 7%;                /* #111111 — slightly lifted surface */
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 95%;
+
+    /* Accent: cool cyan — technical, clean */
+    --primary: 185 80% 55%;         /* #29D8E0-ish */
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 11%;          /* subtle secondary surfaces */
+    --secondary-foreground: 0 0% 80%;
+
+    --muted: 0 0% 11%;
+    --muted-foreground: 0 0% 50%;
+
+    --accent: 185 80% 55%;
+    --accent-foreground: 0 0% 4%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 11%;             /* #1A1A1A — spec border */
+    --input: 0 0% 11%;
+    --ring: 185 80% 55%;
+
+    --radius: 0.5rem;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* BASE RESETS                                                                 */
+  /* -------------------------------------------------------------------------- */
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Smooth scroll for anchor navigation (spec: smooth scroll CTAs) */
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    /* Spec: "deep obsidian" — force even if Tailwind purges */
+    background-color: #0A0A0A;
+    color: rgba(242, 242, 242, 0.95);
+    font-family: "Inter", system-ui, sans-serif;
+    line-height: 1.6;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Antialiasing for sharp text on dark backgrounds */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Prevent flash of unstyled content on load */
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Typography scale */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-semibold tracking-tight;
+    color: rgba(242, 242, 242, 0.98);
+  }
+
+  code, pre, kbd, samp {
+    @apply font-mono;
+  }
+
+  /* Focus ring — accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* UTILITY LAYER — Reusable spec-aligned utilities                            */
+/* -------------------------------------------------------------------------- */
+@layer utilities {
+  /* Spec: "prevent Cumulative Layout Shift" — aspect ratio containers */
+  .aspect-video-container {
+    @apply relative w-full overflow-hidden;
+    aspect-ratio: 16 / 9;
+  }
+
+  .aspect-diagram-container {
+    @apply relative w-full overflow-hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Skeleton loader — used on Cloudinary lazy-load placeholders */
+  .skeleton {
+    @apply animate-skeleton-pulse rounded;
+    background: linear-gradient(
+      90deg,
+      hsl(0 0% 9%) 0%,
+      hsl(0 0% 13%) 50%,
+      hsl(0 0% 9%) 100%
+    );
+    background-size: 200% 100%;
+  }
+
+  /* Glassmorphism surface — used sparingly per spec */
+  .glass-surface {
+    background: rgba(17, 17, 17, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Documentation-style section divider */
+  .section-divider {
+    @apply w-full border-t border-border my-16;
+  }
+
+  /* Spec: "minimal dark-mode aesthetic" — subtle text hierarchy */
+  .text-muted-body {
+    color: rgba(242, 242, 242, 0.55);
+  }
+
+  .text-body {
+    color: rgba(242, 242, 242, 0.75);
+  }
+}
