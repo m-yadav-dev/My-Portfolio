@@ -22,7 +22,7 @@ const { similaritySearch }   = require("./vector-store");
 const env = require("../../config/env");
 
 const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" }); // Gemini 2.5 Flash-Lite
 
 const SYSTEM_PROMPT = `You are an AI assistant embedded in Manish Yadav's developer portfolio.
 Your purpose is to help recruiters, clients, and collaborators learn about Manish's skills, projects, experience, and availability.
@@ -41,17 +41,38 @@ RULES:
 async function generateResponse(userQuery) {
   // 1. Retrieve relevant context chunks from the vector store
   let contextChunks = [];
+
   try {
+    console.log(`Step 1: Searching for relevant context for query: "${userQuery}"`);
     const docs = await similaritySearch(userQuery, 4);
     contextChunks = docs.map((d) => d.pageContent);
+    console.log(`Step 2: Mongodb Atlas returned ${contextChunks?.length || 0} context chunks for the query.`);
+
+    if (docs && docs.length > 0) {
+      // console.log(`[RAG DEBUG] 3. Top chunk preview:`, results[0].pageContent.substring(0, 100));
+      console.log(`Step 3: Retrieved context chunks:\n${contextChunks.map((c, i) => `[${i + 1}] ${c.substring(0, 100)}...`).join("\n")}`);
+
+    }
+    else {
+      console.log("Step 3: ERROR: Vector search returned no relevant context for the query. Proceeding with an empty context.");
+    }
+
   } catch (err) {
-    // Vector search failure → degrade gracefully with no context
-    console.error(JSON.stringify({
-      timestamp: new Date().toISOString(),
-      layer: "SERVICE",
-      module: "rag.service.js — similaritySearch",
+    // Vector search failure — log EVERY detail so Google API errors are immediately visible.
+    // A swallowed error here causes silent empty-context responses that are hard to debug.
+    const errorDetail = {
+      timestamp:    new Date().toISOString(),
+      layer:        "SERVICE",
+      module:       "rag.service.js — similaritySearch",
+      error_name:   err.name,
       error_message: err.message,
-    }));
+      http_status:  err.status ?? err.statusCode ?? err.response?.status ?? "N/A",
+      stack_trace:  err.stack,
+    };
+    console.error("\n[RAG] ❌ SIMILARITY SEARCH FAILED — full error below:");
+    console.error(JSON.stringify(errorDetail, null, 2));
+    console.error("[RAG] ⚠️  Proceeding with empty context. Response quality will be degraded.\n");
+    // contextChunks stays [] — graceful degradation, caller still gets a response
   }
 
   // 2. Compose grounded prompt
@@ -61,10 +82,12 @@ async function generateResponse(userQuery) {
       : "CONTEXT: No specific context found. Answer from general knowledge about Manish Yadav's portfolio.";
 
   const fullPrompt = `${SYSTEM_PROMPT}\n\n${contextBlock}\n\nUSER QUESTION: ${userQuery}\n\nASSISTANT RESPONSE:`;
-
-  // 3. Generate with Gemini 1.5 Flash
+  console.log(`Generated prompt for Gemini:\n${fullPrompt}`);
+  // 3. Generate with Gemini 2.5 Flash-Lite
   const result = await model.generateContent(fullPrompt);
+  console.log(`Result object from Gemini API: ${JSON.stringify(result)}`);
   const text   = result.response.text().trim();
+  console.log(`Response generated for query: "${userQuery}" → "${text}"`);
 
   return { role: "assistant", content: text };
 }
