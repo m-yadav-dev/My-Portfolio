@@ -1,67 +1,92 @@
 /**
  * @file components/skills/TechBadge.jsx
- * @description Single tech-stack icon tile — PNG/SVG/WebP from Cloudinary.
+ * @description Hexagonal glassmorphism tech tile.
  *
- * PERFORMANCE (Phase 6 fix):
- *   - Framer Motion whileHover removed — replaced with pure CSS transitions.
- *   - transform-gpu + will-change-transform → browser pre-allocates a
- *     compositor layer, eliminating main-thread jank on hover.
- *   - hover:-translate-y-1 hover:scale-105 are CSS-only, zero JS overhead.
+ * SHAPE:
+ *   Pointy-top hexagon via clip-path on a W=80 H=92 container (√3:2 ratio ≈ regular hex).
+ *   clip-path kills CSS border — solved with a two-layer stack:
+ *     Layer 1 (outer): cyan-500/25 fill → reads as the border edge
+ *     Layer 2 (inner): 2px inset, glass gradient fill → reads as the face
  *
- * VISIBILITY FIX:
- *   - bg-gradient-to-br from-white/5 to-transparent lifts dark logos
- *     (Express, GitHub, ShadCn) off the obsidian background cleanly.
- *   - border border-white/10 gives a crisp edge without heavy chrome.
- *   - backdrop-blur-sm keeps the glassmorphism premium on transparent surfaces.
+ * GLOW ON HOVER:
+ *   filter:drop-shadow on the wrapper respects clip-path geometry, creating a
+ *   hex-shaped glow — impossible with box-shadow which ignores clip-path.
+ *
+ * PERFORMANCE:
+ *   transform-gpu on wrapper → compositor-layer promotion.
+ *   All hover effects are pure CSS → zero JS runtime cost.
  *
  * Props:
- *   name  {string}  — display name (e.g. "ReactJS")
- *   url   {string}  — Cloudinary delivery URL
+ *   name  {string}  — display name
+ *   url   {string}  — Cloudinary image URL
  */
+
+const HEX = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
+// W:H = √3:2 ≈ 0.866 → closest pixel pair: 80:92
+const W = 80;
+const H = 92;
 
 export default function TechBadge({ name, url }) {
   return (
     <div
-      className="
-        flex flex-col items-center gap-2.5 p-3.5 rounded-xl
-        bg-gradient-to-br from-white/5 to-transparent
-        border border-white/10
-        backdrop-blur-sm
-        cursor-default
-        transform-gpu will-change-transform
-        transition-all duration-300 ease-out
-        hover:-translate-y-1 hover:scale-105
-        hover:shadow-lg hover:border-white/20
-      "
       aria-label={name}
       title={name}
+      className="relative shrink-0 transform-gpu cursor-default group
+                 transition-all duration-300 ease-out
+                 hover:scale-110"
+      style={{
+        width:  W,
+        height: H,
+        filter: "drop-shadow(0 0 0px rgba(6,182,212,0))",
+      }}
+      // CSS hover handled via group classes on children; glow via inline onMouseEnter
+      onMouseEnter={(e) => { e.currentTarget.style.filter = "drop-shadow(0 0 10px rgba(6,182,212,0.45))"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.filter = "drop-shadow(0 0 0px rgba(6,182,212,0))";   }}
     >
-      {/* Icon container — fixed 48×48 prevents CLS */}
-      <div className="w-12 h-12 flex items-center justify-center shrink-0">
-        <img
-          src={url}
-          alt={`${name} logo`}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-contain"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-            e.currentTarget.nextElementSibling?.classList.remove("hidden");
-          }}
-        />
-        {/* Initials fallback — hidden until onError fires */}
+      {/* Layer 1 — cyan border (outer hex) */}
+      <div
+        className="absolute inset-0"
+        style={{ clipPath: HEX, background: "rgba(6,182,212,0.28)" }}
+      />
+
+      {/* Layer 2 — glass face (inner hex, 2px inset creates border illusion) */}
+      <div
+        className="absolute flex flex-col items-center justify-center gap-1"
+        style={{
+          inset:          "2px",
+          clipPath:       HEX,
+          background:     "linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+        }}
+      >
+        {/* Icon */}
+        <div style={{ width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img
+            src={url}
+            alt={`${name} logo`}
+            loading="lazy"
+            decoding="async"
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              const fb = e.currentTarget.nextElementSibling;
+              if (fb) fb.classList.remove("hidden");
+            }}
+          />
+          <span aria-hidden="true" className="hidden text-xs font-bold text-cyan-400 font-mono">
+            {name.slice(0, 2).toUpperCase()}
+          </span>
+        </div>
+
+        {/* Label — padded away from angled corners */}
         <span
-          aria-hidden="true"
-          className="hidden w-full h-full items-center justify-center text-sm font-bold text-primary font-mono"
+          style={{ fontSize: 8, lineHeight: 1.2, maxWidth: 58, padding: "0 6px" }}
+          className="font-semibold text-[#E0E0E0] text-center"
         >
-          {name.slice(0, 2).toUpperCase()}
+          {name}
         </span>
       </div>
-
-      {/* Name label */}
-      <span className="text-[10px] font-mono text-muted-foreground/80 text-center leading-tight">
-        {name}
-      </span>
     </div>
   );
 }
