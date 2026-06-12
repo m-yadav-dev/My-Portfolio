@@ -1,45 +1,35 @@
 /**
  * @file components/sections/SkillsSection.jsx
- * @description Tech arsenal section anchored at #skills.
- * Skills are grouped into four categories and rendered as badge pills.
- * In Phase 4, each pill will be replaced by a <TechBadge> component.
- * No API calls — this data is intrinsic to the developer, not spec-driven JSON.
+ * @description Tech arsenal section — image-based icon grid.
+ *
+ * DATA FLOW (Phase 6 refactor):
+ *   techStack (data/techStackData.js) → 4 category columns → TechBadge grid
+ *
+ * This file owns: section header, category label row, stagger animation.
+ * Icon rendering is entirely delegated to <TechBadge>.
+ * Zero hardcoded skill strings — all content comes from techStackData.js.
  */
 
 import { motion } from "framer-motion";
+import { techStack, categoryLabels } from "@/data/techStackData";
+import TechBadge from "@/components/skills/TechBadge";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 12 },
+  hidden:  { opacity: 0, y: 12 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
 
 const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.07 } },
 };
 
-const SKILL_CATEGORIES = [
-  {
-    id: "cat-frontend",
-    label: "Frontend",
-    skills: ["React.js v18", "Vite", "Tailwind CSS", "Zustand", "Framer Motion", "shadcn/ui"],
-  },
-  {
-    id: "cat-backend",
-    label: "Backend",
-    skills: ["Node.js v18", "Express.js", "MongoDB", "Mongoose", "REST APIs", "Zod"],
-  },
-  {
-    id: "cat-ai",
-    label: "AI & Automation",
-    skills: ["n8n", "Google Gemini", "LangChain", "RAG Pipelines", "Vector Search", "Webhooks"],
-  },
-  {
-    id: "cat-tooling",
-    label: "Tooling",
-    skills: ["Git", "Docker", "Postman", "MongoDB Atlas", "Cloudinary", "Resend"],
-  },
-];
+// Map the techStack object into an ordered array for rendering
+const CATEGORIES = Object.entries(techStack).map(([key, tools]) => ({
+  key,
+  label: categoryLabels[key],
+  tools,
+}));
 
 export default function SkillsSection() {
   return (
@@ -49,7 +39,13 @@ export default function SkillsSection() {
       aria-labelledby="skills-heading"
     >
       <div className="max-w-6xl mx-auto">
-        <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="mb-14">
+
+        {/* Section header */}
+        <motion.div
+          variants={stagger} initial="hidden"
+          whileInView="visible" viewport={{ once: true, margin: "-80px" }}
+          className="mb-14"
+        >
           <motion.p variants={fadeUp} className="text-xs font-mono text-primary tracking-widest mb-3">
             02 / TECH ARSENAL
           </motion.p>
@@ -59,32 +55,41 @@ export default function SkillsSection() {
           </motion.h2>
         </motion.div>
 
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
-          {SKILL_CATEGORIES.map(({ id, label, skills }) => (
-            <motion.div key={id} id={id} variants={fadeUp} className="space-y-3">
-              <p className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase border-b border-border pb-2">
+        {/* Category columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10">
+          {CATEGORIES.map(({ key, label, tools }) => (
+            <motion.div
+              key={key}
+              id={`cat-${key}`}
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              className="space-y-4"
+            >
+              {/* Category label */}
+              <motion.p
+                variants={fadeUp}
+                className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase border-b border-border pb-2"
+              >
                 {label}
-              </p>
-              {/* Phase 4: Replace spans with <TechBadge> component */}
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-2.5 py-1 rounded text-xs font-mono bg-secondary text-secondary-foreground border border-border hover:border-primary/30 transition-colors duration-200"
-                  >
-                    {skill}
-                  </span>
+              </motion.p>
+
+              {/* Icon grid — responsive wrap */}
+              <motion.div
+                variants={stagger}
+                className="grid grid-cols-3 gap-2.5"
+              >
+                {tools.map(({ name, url }) => (
+                  <motion.div key={name} variants={fadeUp}>
+                    <TechBadge name={name} url={url} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
+
       </div>
     </section>
   );

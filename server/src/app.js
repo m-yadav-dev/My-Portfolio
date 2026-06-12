@@ -9,9 +9,10 @@
  *   2. cors         — whitelist CLIENT_URL only
  *   3. morgan       — structured HTTP request logging
  *   4. json parser  — parse incoming JSON bodies
- *   5. API routes   — /api/projects, /api/chat, /api/contact (Phase 5+)
- *   6. 404 handler  — unmatched routes
- *   7. Global error handler — all thrown errors
+ *   5. API routes   — /api/contact, /api/chat  (project data is now frontend-static)
+ *   6. Health check — /api/health
+ *   7. 404 handler  — unmatched routes
+ *   8. Global error handler — all thrown errors
  */
 
 "use strict";
@@ -22,7 +23,6 @@ const cors    = require("cors");
 const morgan  = require("morgan");
 const env     = require("./config/env"); // SPEC: never use process.env directly
 
-const projectRoutes = require("./routes/project.routes");
 const contactRoutes = require("./routes/contact.routes");
 const chatRoutes    = require("./routes/chat.routes");
 
@@ -38,33 +38,32 @@ app.use(helmet());
 // ---------------------------------------------------------------------------
 app.use(
   cors({
-    origin: env.CORS_ORIGIN,
-    methods: ["GET", "POST"],
+    origin:         env.CORS_ORIGIN,
+    methods:        ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials:    true,
   })
 );
 
 // ---------------------------------------------------------------------------
-// 3. Request logging — Morgan (dev-friendly combined format)
+// 3. Request logging — Morgan
 // ---------------------------------------------------------------------------
 app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // ---------------------------------------------------------------------------
 // 4. Body parsing
 // ---------------------------------------------------------------------------
-app.use(express.json({ limit: "10kb" })); // Limit payload size as a guard
+app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: false }));
 
 // ---------------------------------------------------------------------------
-// 5. API Routes
+// 5. API Routes  (/api/projects removed — data now served from frontend bundle)
 // ---------------------------------------------------------------------------
-app.use("/api/projects", projectRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat",    chatRoutes);
 
 // ---------------------------------------------------------------------------
-// 6. Health-check route
+// 6. Health-check
 // ---------------------------------------------------------------------------
 app.get("/api/health", (_req, res) =>
   res.status(200).json({ success: true, data: { status: "ok" }, error: null })
@@ -87,18 +86,18 @@ app.use((_req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   console.error(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    layer: "MIDDLEWARE",
-    module: "app.js — globalErrorHandler",
+    timestamp:     new Date().toISOString(),
+    layer:         "MIDDLEWARE",
+    module:        "app.js — globalErrorHandler",
     error_message: err.message,
-    stack_trace: err.stack,
+    stack_trace:   err.stack,
   }));
 
   res.status(err.status ?? 500).json({
     success: false,
-    data: null,
+    data:    null,
     error: {
-      code: err.code ?? "INTERNAL_SERVER_ERROR",
+      code:    err.code    ?? "INTERNAL_SERVER_ERROR",
       message: err.message ?? "An unexpected error occurred.",
     },
   });

@@ -1,16 +1,3 @@
-/**
- * @file src/data/projectsData.js
- * @description Spec-driven project configuration array.
- *
- * SPEC RULE: "Zero hardcoded data in UI components."
- * This is the single source of truth for all project data served by the API.
- * All `card_thumbnail`, `architecture_diagram`, and `demo_gif` values use
- * Cloudinary placeholder URLs — replace with real Cloudinary delivery URLs
- * once assets are uploaded.
- *
- * Categories MUST match the spec exactly:
- *   "MERN Stack" | "n8n Automations" | "NxtWave Frontend"
- */
 
 "use strict";
 
@@ -20,7 +7,7 @@ const projects = [
   // ---------------------------------------------------------------------------
   {
     id: "chatrivo-ecosystem",
-    card_thumbnail: "https://res.cloudinary.com/placeholder/image/upload/v1/chatrivo-thumbnail",
+    card_thumbnail: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780918470/2925ee2e-7059-4043-887c-c31b22437b86.png",
     category: "MERN Stack",
     title: "Chatrivo Ecosystem",
     summary:
@@ -37,7 +24,7 @@ const projects = [
         architecture_diagram:
           "https://res.cloudinary.com/placeholder/image/upload/v1/chatrivo-architecture",
         demo_gif:
-          "https://res.cloudinary.com/placeholder/image/upload/v1/chatrivo-demo",
+          "https://res.cloudinary.com/dyjo8b263/image/upload/v1780918384/Animation_wunt61.gif",
       },
     },
     github_url: "https://github.com/m-yadav-dev/chatrivo",
@@ -49,7 +36,7 @@ const projects = [
   // ---------------------------------------------------------------------------
   {
     id: "gmail-management-agent",
-    card_thumbnail: "https://res.cloudinary.com/placeholder/image/upload/v1/gmail-agent-thumbnail",
+    card_thumbnail: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780413252/6a277728-fbd8-45c0-8a95-53f7da1f6d3d.png",
     category: "n8n Automations",
     title: "AI Powered Gmail Management Agent",
     summary:
@@ -64,9 +51,9 @@ const projects = [
         "Reduced manual email processing time by 85%, automated responses for 70% of recurring query types, and created an audit trail of all AI routing decisions.",
       visual_evidence: {
         architecture_diagram:
-          "https://res.cloudinary.com/placeholder/image/upload/v1/gmail-agent-architecture",
+          "https://res.cloudinary.com/dyjo8b263/image/upload/v1780413252/6a277728-fbd8-45c0-8a95-53f7da1f6d3d.png",
         demo_gif:
-          "https://res.cloudinary.com/placeholder/image/upload/v1/gmail-agent-demo",
+          "https://res.cloudinary.com/dyjo8b263/image/upload/v1780917291/Animation_ftlfn8.gif",
       },
     },
     github_url: null,
@@ -101,6 +88,62 @@ const projects = [
     github_url: "https://github.com/m-yadav-dev/jobby-app",
     live_url: null,
   },
+
+
+  // Ai Code Reviewer Agent - n8n Automation
+
+
+  {
+    id: "ai-code-reviewer-agent",
+    card_thumbnail: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780913575/copy_of_16dca389-1008-4c3d-ab3e-0dcf5cbe2103.png",
+    category: "n8n Automations",
+    title: "AI Code Reviewer Agent",
+    summary:
+      "An n8n workflow that uses Google Gemini to automatically review code snippets sent via email, providing feedback and suggestions directly in the inbox.",
+    tech_stack: ["n8n", "Google Gemini API", "Webhooks", "JavaScript", "Gmail API"],
+    deep_dive: {
+      problem:
+        "Developers often receive code snippets via email that require review, but manual feedback can be time-consuming and inconsistent.",
+      solution:
+        "Created an n8n workflow that triggers on incoming emails with code attachments, sends the code to Gemini for analysis, and replies with structured feedback and improvement suggestions.",
+      impact:
+        "Streamlined the code review process, providing instant feedback on common issues like syntax errors, security vulnerabilities, and best practice violations.",
+      visual_evidence: {
+        architecture_diagram:
+          "https://res.cloudinary.com/dyjo8b263/image/upload/v1780913575/copy_of_16dca389-1008-4c3d-ab3e-0dcf5cbe2103.png",
+        demo_gif:
+          "https://res.cloudinary.com/dyjo8b263/image/upload/v1780914193/Animation_luutys.gif",
+      },
+    },
+    github_url: null,
+    live_url: null,
+
+  }, 
+
+  // EduReach - MERN Stack
+  {
+    id: "edureach",
+    card_thumbnail: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780986745/a3068984-c151-4817-97e1-d7810a727d45.png",
+    category: "MERN Stack",
+    title: "EduReach",
+    summary: "An AI-powered college platform with a RAG-based chatbot with a talk-to-counselor feature and personalized course recommendations.",
+    tech_stack: ["React", "Node.js", "Typescript", "MongoDB", "Gemini API", "VAPI", "TWilio API"],
+    deep_dive: {
+      problem: "Students struggle to find personalized college guidance and course recommendations in one place.",
+      solution: "Built a MERN stack platform with a RAG-based chatbot for college queries, a talk-to-counselor feature using Twilio, and personalized course recommendations powered by Gemini.",
+      impact: "Provided students with instant, AI-driven college guidance and personalized course suggestions, improving their decision-making process.",
+      visual_evidence: {
+        architecture_diagram: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780986745/a3068984-c151-4817-97e1-d7810a727d45.png",
+        demo_gif_1: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780983917/Animation_y6swq7.gif",
+        demo_gif_2: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780985882/Ai_Counselor_ycijbg.gif",
+      },
+    github_url: null,
+    live_url: "https://edurati.vercel.app/",
+    }
+  }
+
+
 ];
 
-module.exports = projects;
+
+export default projects;
