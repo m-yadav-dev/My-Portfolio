@@ -3,9 +3,14 @@
  * @description Static project catalog — single source of truth on the frontend.
  *
  * Each project exposes:
- *   id              — URL slug used by /projects/:projectId
- *   githubUrl       — direct repo link
- *   deep_dive       — { problem, solution, impact, keyFeatures[], diagramShowcase[] }
+ *   id           — URL slug for /projects/:projectId
+ *   githubUrl    — direct repo link
+ *   deep_dive    — { problem, solution, impact, keyFeatures[], mediaAssets[] }
+ *
+ * mediaAssets[] — NORMALISED visual evidence array (replaces the former
+ *   dual-key schema of diagramShowcase[] + visual_evidence{}).
+ *   Schema: { title: string, url: string }
+ *   Rule:   title "Result / Demo" FIRST (highest recruiter impact), then "Architecture".
  *
  * Categories MUST match spec: "MERN Stack" | "n8n Automations" | "NxtWave Frontend"
  */
@@ -38,16 +43,12 @@ const projectsData = [
         "JWT-based authentication with refresh token rotation",
         "Responsive UI with optimistic message rendering < 50ms perceived latency",
       ],
-      diagramShowcase: [
+      mediaAssets: [
         {
-          label: "Demo — Live Chat",
+          title: "Result / Demo",
           url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780918384/Animation_wunt61.gif",
         },
       ],
-      visual_evidence: {
-        architecture_diagram: "https://res.cloudinary.com/placeholder/image/upload/v1/chatrivo-architecture",
-        demo_gif:             "https://res.cloudinary.com/dyjo8b263/image/upload/v1780918384/Animation_wunt61.gif",
-      },
     },
   },
 
@@ -78,20 +79,16 @@ const projectsData = [
         "Full audit trail of every AI routing decision stored in Google Sheets",
         "n8n error-handling branches with Slack alert on classification failure",
       ],
-      diagramShowcase: [
+      mediaAssets: [
         {
-          label: "n8n Workflow — Gmail Agent",
-          url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780413252/6a277728-fbd8-45c0-8a95-53f7da1f6d3d.png",
-        },
-        {
-          label: "Demo — Automated Routing",
+          title: "Result / Demo",
           url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780917291/Animation_ftlfn8.gif",
         },
+        {
+          title: "Architecture",
+          url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780413252/6a277728-fbd8-45c0-8a95-53f7da1f6d3d.png",
+        },
       ],
-      visual_evidence: {
-        architecture_diagram: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780413252/6a277728-fbd8-45c0-8a95-53f7da1f6d3d.png",
-        demo_gif:             "https://res.cloudinary.com/dyjo8b263/image/upload/v1780917291/Animation_ftlfn8.gif",
-      },
     },
   },
 
@@ -121,11 +118,7 @@ const projectsData = [
         "useContext for global auth state — zero Redux overhead",
         "Responsive layout with Tailwind CSS utility-first design",
       ],
-      diagramShowcase: [],
-      visual_evidence: {
-        architecture_diagram: "https://res.cloudinary.com/placeholder/image/upload/v1/jobby-architecture",
-        demo_gif:             "https://res.cloudinary.com/placeholder/image/upload/v1/jobby-demo",
-      },
+      mediaAssets: [], // No media assets — section hidden automatically
     },
   },
 
@@ -156,20 +149,16 @@ const projectsData = [
         "n8n error branch — fallback alert to developer on Gemini timeout",
         "Audit log of all reviews stored for quality tracking",
       ],
-      diagramShowcase: [
+      mediaAssets: [
         {
-          label: "n8n Workflow — Code Reviewer",
-          url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780913575/copy_of_16dca389-1008-4c3d-ab3e-0dcf5cbe2103.png",
-        },
-        {
-          label: "Demo — Review in Action",
+          title: "Result / Demo",
           url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780914193/Animation_luutys.gif",
         },
+        {
+          title: "Architecture",
+          url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780913575/copy_of_16dca389-1008-4c3d-ab3e-0dcf5cbe2103.png",
+        },
       ],
-      visual_evidence: {
-        architecture_diagram: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780913575/copy_of_16dca389-1008-4c3d-ab3e-0dcf5cbe2103.png",
-        demo_gif:             "https://res.cloudinary.com/dyjo8b263/image/upload/v1780914193/Animation_luutys.gif",
-      },
     },
   },
 
@@ -178,7 +167,7 @@ const projectsData = [
   // ---------------------------------------------------------------------------
   {
     id:            "edureach-college-rag",
-    card_thumbnail: "https://res.cloudinary.com/placeholder/image/upload/v1/edureach-thumbnail",
+    card_thumbnail: "https://res.cloudinary.com/dyjo8b263/image/upload/v1780986745/a3068984-c151-4817-97e1-d7810a727d45.png",
     category:      "MERN Stack",
     title:         "Edureach College RAG",
     summary:       "A Retrieval-Augmented Generation system that lets students query a college's entire knowledge base via a conversational AI interface — built on the MERN stack with Google Gemini and MongoDB Atlas Vector Search.",
@@ -200,11 +189,16 @@ const projectsData = [
         "Source citation UI — every answer shows which document it came from",
         "Express RAG API with Zod validation and 15 req/15 min rate limiting",
       ],
-      diagramShowcase: [],
-      visual_evidence: {
-        architecture_diagram: "https://res.cloudinary.com/placeholder/image/upload/v1/edureach-architecture",
-        demo_gif:             "https://res.cloudinary.com/placeholder/image/upload/v1/edureach-demo",
-      },
+      mediaAssets: [
+        {
+          title: "Result / Demo",
+          url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780983917/Animation_y6swq7.gif",
+        },
+        {
+          title: "Architecture",
+          url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1781345346/edu_reach_data_flow_1_optimized_jyxn4o.png",
+        },
+      ],
     },
   },
 ];

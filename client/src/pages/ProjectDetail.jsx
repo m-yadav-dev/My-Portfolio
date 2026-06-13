@@ -85,7 +85,7 @@ export default function ProjectDetail() {
     live_url,
     deep_dive,
   } = project;
-  const { problem, solution, impact, keyFeatures, diagramShowcase } =
+  const { problem, solution, impact, keyFeatures, mediaAssets } =
     deep_dive ?? {};
 
   return (
@@ -113,7 +113,7 @@ export default function ProjectDetail() {
       
       {/* ── Diagram Showcase ─────────────────────────────── */}
       <motion.div variants={fadeUp}>
-        <DiagramShowcase diagrams={diagramShowcase} />
+        <DiagramShowcase media={mediaAssets} />
       </motion.div>
 
       <motion.div variants={stagger} initial="hidden" animate="visible">

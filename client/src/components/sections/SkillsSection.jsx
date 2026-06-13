@@ -1,18 +1,20 @@
 /**
  * @file components/sections/SkillsSection.jsx
- * @description Tech arsenal section — image-based icon grid.
+ * @description Tech arsenal — honeycomb category islands.
  *
- * DATA FLOW (Phase 6 refactor):
- *   techStack (data/techStackData.js) → 4 category columns → TechBadge grid
+ * DATA FLOW:
+ *   techStackData.js → CATEGORIES array → HoneycombGrid island per category
  *
- * This file owns: section header, category label row, stagger animation.
- * Icon rendering is entirely delegated to <TechBadge>.
- * Zero hardcoded skill strings — all content comes from techStackData.js.
+ * LAYOUT:
+ *   Desktop (xl): 4 island columns side by side, items-start so islands
+ *                 don't stretch to fill uneven heights
+ *   Tablet  (md): 2 × 2 grid
+ *   Mobile       : single column stack (HoneycombGrid falls back to flex-wrap)
  */
 
 import { motion } from "framer-motion";
 import { techStack, categoryLabels } from "@/data/techStackData";
-import TechBadge from "@/components/skills/TechBadge";
+import HoneycombGrid from "@/components/skills/HoneycombGrid";
 
 const fadeUp = {
   hidden:  { opacity: 0, y: 12 },
@@ -21,10 +23,9 @@ const fadeUp = {
 
 const stagger = {
   hidden:  {},
-  visible: { transition: { staggerChildren: 0.07 } },
+  visible: { transition: { staggerChildren: 0.08 } },
 };
 
-// Map the techStack object into an ordered array for rendering
 const CATEGORIES = Object.entries(techStack).map(([key, tools]) => ({
   key,
   label: categoryLabels[key],
@@ -44,7 +45,7 @@ export default function SkillsSection() {
         <motion.div
           variants={stagger} initial="hidden"
           whileInView="visible" viewport={{ once: true, margin: "-80px" }}
-          className="mb-14"
+          className="mb-16"
         >
           <motion.p variants={fadeUp} className="text-xs font-mono text-primary tracking-widest mb-3">
             02 / TECH ARSENAL
@@ -55,8 +56,8 @@ export default function SkillsSection() {
           </motion.h2>
         </motion.div>
 
-        {/* Category columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10">
+        {/* Category islands — 1 col → 2 col (md) → 4 col (xl), items-start prevents stretch */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-10 gap-y-14 items-start">
           {CATEGORIES.map(({ key, label, tools }) => (
             <motion.div
               key={key}
@@ -65,7 +66,7 @@ export default function SkillsSection() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-40px" }}
-              className="space-y-4"
+              className="space-y-5"
             >
               {/* Category label */}
               <motion.p
@@ -75,16 +76,9 @@ export default function SkillsSection() {
                 {label}
               </motion.p>
 
-              {/* Icon grid — responsive wrap */}
-              <motion.div
-                variants={stagger}
-                className="grid grid-cols-3 gap-2.5"
-              >
-                {tools.map(({ name, url }) => (
-                  <motion.div key={name} variants={fadeUp}>
-                    <TechBadge name={name} url={url} />
-                  </motion.div>
-                ))}
+              {/* Honeycomb island — hex tiles tessellated per-category */}
+              <motion.div variants={fadeUp}>
+                <HoneycombGrid tools={tools} />
               </motion.div>
             </motion.div>
           ))}
