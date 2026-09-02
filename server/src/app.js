@@ -36,9 +36,24 @@ app.use(helmet());
 // ---------------------------------------------------------------------------
 // 2. CORS — allow requests ONLY from the trusted frontend origin
 // ---------------------------------------------------------------------------
+
+const allowedOrignes = [
+  "https://manishworks.vercel.app/", 
+  "http://localhost:3000",
+  "http://localhost:5173",
+  env.CORS_ORIGIN,
+];
+
 app.use(
   cors({
-    origin:         env.CORS_ORIGIN,
+    origin: (origin,callback) => {
+      // Allow requests with no origin (like mobile apps,curl requests, postman etc)
+      if (!origin || allowedOrignes.includes(origin)) {
+        callback(null,true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods:        ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials:    true,
