@@ -11,6 +11,9 @@
 const mongoose = require("mongoose");
 const env = require("./env");
 
+
+mongoose.set("strictQuery", false); // avoid deprecation warning for strict mode
+
 async function connectDB() {
   try {
     await mongoose.connect(env.MONGODB_URI, {

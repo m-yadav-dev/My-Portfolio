@@ -8,7 +8,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      // Path alias so components can import as "@/components/..." 
+      // Path alias so components can import as "@/components/..."
       // (required by shadcn/ui convention)
       "@": path.resolve(__dirname, "./src"),
     },
@@ -16,8 +16,17 @@ export default defineConfig({
 
   server: {
     port: 5173,
-    // Proxy API calls to Express backend during local dev
-    // Avoids CORS issues when calling http://localhost:5000
+
+    // -----------------------------------------------------------------------
+    // DEV PROXY — eliminates CORS during local development
+    // -----------------------------------------------------------------------
+    // When the frontend makes a request to "/api/chat", Vite intercepts it
+    // and forwards it to http://localhost:5000/api/chat.
+    //
+    // This proxy ONLY runs during `npm run dev`. In production (Vercel),
+    // the Axios baseURL is set to the full Render URL via VITE_API_URL,
+    // so the proxy is never involved.
+    // -----------------------------------------------------------------------
     proxy: {
       "/api": {
         target: "http://localhost:5000",

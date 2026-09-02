@@ -37,7 +37,10 @@ export default function ProjectCard({ project }) {
         boxShadow: "0 0 0 1px hsl(var(--primary)/0.3), 0 8px 24px rgba(0,0,0,0.4)",
       }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="group flex flex-col h-full rounded-xl border border-border bg-card overflow-hidden cursor-default"
+      className="group flex flex-col h-full rounded-xl border border-border bg-card overflow-hidden cursor-default
+                 transition-all duration-300
+                 group-hover:border-cyan-500/30
+                 group-hover:shadow-[inset_0_0_20px_rgba(6,182,212,0.15)]"
       aria-label={`Project: ${title}`}
     >
       {/* Thumbnail — lazy + async decode to offload GIF decode from main thread */}
@@ -51,7 +54,8 @@ export default function ProjectCard({ project }) {
             alt={`${title} screenshot`}
             loading="lazy"
             decoding="async"
-            className="absolute inset-0 w-full h-full object-cover transform-gpu group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+            className="absolute inset-0 w-full h-full object-cover transform-gpu
+                       transition-transform duration-500 ease-out group-hover:scale-105"
           />
         ) : (
           <div className="skeleton absolute inset-0 w-full h-full" aria-hidden="true" />
@@ -81,23 +85,24 @@ export default function ProjectCard({ project }) {
           aria-expanded={isExpanded}
           onClick={() => setIsExpanded((v) => !v)}
         >
-          {(isExpanded ? tech_stack : tech_stack.slice(0, 4)).map((tech) => (
+          {(isExpanded ? tech_stack : tech_stack.slice(0, 3)).map((tech) => (
             <span
               key={tech}
               role="listitem"
-              className="px-2 py-0.5 rounded text-[10px] font-mono bg-secondary border border-border text-muted-foreground"
+              className="px-2 py-0.5 rounded text-[10px] font-mono
+                         bg-white/5 border border-white/10 text-gray-400"
             >
               {tech}
             </span>
           ))}
           {/* +N toggle badge — only shown when collapsed and there are hidden items */}
-          {!isExpanded && tech_stack.length > 4 && (
+          {!isExpanded && tech_stack.length > 3 && (
             <span
-              className="px-2 py-0.5 rounded text-[10px] font-mono border border-primary/30 text-primary/70
-                         hover:bg-primary/10 transition-colors duration-150 cursor-pointer"
-              aria-label={`Show ${tech_stack.length - 4} more technologies`}
+              className="px-2 py-0.5 rounded text-[10px] font-mono border border-white/10
+                         text-gray-500 hover:text-gray-300 transition-colors duration-150 cursor-pointer"
+              aria-label={`Show ${tech_stack.length - 3} more technologies`}
             >
-              +{tech_stack.length - 4}
+              +{tech_stack.length - 3}
             </span>
           )}
         </div>

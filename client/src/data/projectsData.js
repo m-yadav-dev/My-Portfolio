@@ -195,7 +195,7 @@ const projectsData = [
           url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1780983917/Animation_y6swq7.gif",
         },
         {
-          title: "Architecture",
+          title: "RAG Architecture",
           url:   "https://res.cloudinary.com/dyjo8b263/image/upload/v1781345346/edu_reach_data_flow_1_optimized_jyxn4o.png",
         },
       ],

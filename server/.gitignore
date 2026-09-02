@@ -4,6 +4,7 @@ node_modules/
 # Environment secrets — NEVER commit the real .env
 .env
 
+
 # Logs
 logs/
 *.log
