@@ -29,7 +29,10 @@ import axios from "axios";
  * - VITE_API_URL is set on Vercel → use it as-is.
  * - Otherwise, fall back to "/api" which Vite proxies during dev.
  */
-const baseURL = import.meta.env.VITE_API_URL || "/api";
+const envUrl = import.meta.env.VITE_API_URL;
+const baseURL = envUrl 
+  ? (envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`) 
+  : "/api";
 
 /**
  * Pre-configured Axios instance for all backend communication.

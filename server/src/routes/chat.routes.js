@@ -33,6 +33,6 @@ const chatLimiter = rateLimit({
   },
 });
 
-router.post("/chat", chatLimiter, handleChatMessage);
+router.post("/", chatLimiter, handleChatMessage);
 
 module.exports = router;

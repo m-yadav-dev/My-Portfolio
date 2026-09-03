@@ -38,8 +38,7 @@ app.use(helmet());
 // ---------------------------------------------------------------------------
 
 const allowedOrignes = [
-  "https://manishworks.vercel.app/", 
-  "http://localhost:3000",
+  "https://manishworks.vercel.app", 
   "http://localhost:5173",
   env.CORS_ORIGIN,
 ];
@@ -54,7 +53,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods:        ["GET", "POST"],
+    methods:        ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials:    true,
   })

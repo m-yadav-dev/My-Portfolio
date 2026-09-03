@@ -17,12 +17,11 @@
 
 "use strict";
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 const { similaritySearch }   = require("./vector-store");
 const env = require("../../config/env");
 
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" }); // Gemini 2.5 Flash-Lite
+const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `You are an AI assistant embedded in Manish Yadav's developer portfolio.
 Your purpose is to help recruiters, clients, and collaborators learn about Manish's skills, projects, experience, and availability.
@@ -84,9 +83,12 @@ async function generateResponse(userQuery) {
   const fullPrompt = `${SYSTEM_PROMPT}\n\n${contextBlock}\n\nUSER QUESTION: ${userQuery}\n\nASSISTANT RESPONSE:`;
   console.log(`Generated prompt for Gemini:\n${fullPrompt}`);
   // 3. Generate with Gemini 2.5 Flash-Lite
-  const result = await model.generateContent(fullPrompt);
-  console.log(`Result object from Gemini API: ${JSON.stringify(result)}`);
-  const text   = result.response.text().trim();
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash-lite',
+    contents: fullPrompt,
+  });
+  console.log(`Result object from Gemini API: ${JSON.stringify(response)}`);
+  const text   = response.text.trim();
   console.log(`Response generated for query: "${userQuery}" → "${text}"`);
 
   return { role: "assistant", content: text };
