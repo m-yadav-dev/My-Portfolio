@@ -91,6 +91,10 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "fade-in-up": {
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
         "skeleton-pulse": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.4" },
@@ -103,6 +107,7 @@ module.exports = {
 
       animation: {
         "fade-in": "fade-in 0.4s ease-out both",
+        "fade-in-up": "fade-in-up 0.8s ease-out both",
         "skeleton-pulse": "skeleton-pulse 1.5s ease-in-out infinite",
         "slide-in-right": "slide-in-right 0.3s ease-out both",
       },

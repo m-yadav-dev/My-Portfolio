@@ -67,8 +67,8 @@
   body {
     @apply bg-background text-foreground font-sans;
     /* Spec: "deep obsidian" — force even if Tailwind purges */
-    background-color: #0A0A0A;
-    color: rgba(242, 242, 242, 0.95);
+    background-color: #0B0C10;
+    color: #94A3B8;
     font-family: "Inter", system-ui, sans-serif;
     line-height: 1.6;
     /* Prevent horizontal scroll */

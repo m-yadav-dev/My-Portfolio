@@ -6,15 +6,15 @@
  */
 
 import { Outlet } from "react-router-dom";
-import Header     from "@/components/layout/Header";
+import Header from "@/components/layout/Header";
 import Footer     from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
 
 export default function MainLayout() {
   return (
-    <div className="flex flex-col min-h-screen bg-obsidian">
+    <div className="flex flex-col min-h-screen bg-[#0B0C10] text-[#94A3B8]">
       <Header />
-      <main id="main-content" className="flex-1 pt-16" role="main">
+      <main id="main-content" className="flex-1 w-full max-w-6xl mx-auto px-6 md:px-12 pt-24" role="main">
         <Outlet />
       </main>
       <Footer />
