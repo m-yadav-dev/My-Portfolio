@@ -24,7 +24,7 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import ProjectCard from "@/components/project/ProjectCard";
+import ProjectCard from "./ProjectCard";
 import { cn } from "@/lib/utils";
 
 const EMBLA_OPTIONS = {

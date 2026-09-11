@@ -9,7 +9,7 @@
  * Renders nothing when media[] is empty or missing (Jobby App case).
  */
 
-import TabbedGallery from "@/components/project/TabbedGallery";
+import TabbedGallery from "./TabbedGallery";
 
 export default function DiagramShowcase({ media }) {
   if (!media?.length) return null;

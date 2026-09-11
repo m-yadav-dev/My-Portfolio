@@ -16,9 +16,9 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { GithubIcon } from "@/components/icons";
-import projectsData from "@/data/projectsData";
-import KeyFeaturesSection from "@/components/project/KeyFeaturesSection";
-import DiagramShowcase from "@/components/project/DiagramShowcase";
+import projectsData from "@/features/projects/data/projectsData";
+import KeyFeaturesSection from "@/features/projects/components/KeyFeaturesSection";
+import DiagramShowcase from "@/features/projects/components/DiagramShowcase";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },

@@ -1,7 +1,7 @@
 
 
-import { techStack } from "../../data/techStackData.jsx";
-import CategoryCard from "../skills/CategoryCard.jsx";
+import { techStack } from "../data/techStackData.jsx";
+import CategoryCard from "./CategoryCard.jsx";
 
 const SkillsSection = () => {
   const categories = Object.keys(techStack);

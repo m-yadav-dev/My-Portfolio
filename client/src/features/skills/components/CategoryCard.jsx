@@ -1,6 +1,6 @@
 import TechBadge from "./TechBadge";
 
-import { categoryLabels, categoryIcons } from "../../data/techStackData.jsx";
+import { categoryLabels, categoryIcons } from "../data/techStackData.jsx";
 
 const CategoryCard = ({ categoryKey, skills, index }) => {
     const label = categoryLabels[categoryKey] || categoryKey;

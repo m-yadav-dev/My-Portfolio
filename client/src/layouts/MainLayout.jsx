@@ -6,8 +6,8 @@
  */
 
 import { Outlet } from "react-router-dom";
-import Header from "@/components/layout/Header";
-import Footer     from "@/components/layout/Footer";
+import Header from "./Header";
+import Footer     from "./Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
 
 export default function MainLayout() {

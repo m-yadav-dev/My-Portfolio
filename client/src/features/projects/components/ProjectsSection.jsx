@@ -2,7 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import projectsData from "@/data/projectsData";
+import projectsData from "../data/projectsData";
 import ragMockup from "@/assets/rag-chatbot-mockup.jpg";
 
 /* ── Fallback thumbnails for projects missing card_thumbnail ── */

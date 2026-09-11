@@ -3,9 +3,10 @@
  * @description Single-page landing. Composes all homepage sections.
  */
 
-import HeroSection from "@/components/sections/HeroSection";
-import SkillsSection from "@/components/sections/SkillsSection";
-import ProjectsSection from "@/components/sections/ProjectsSection";
+import { HeroSection } from "@/features/home";
+import SkillsSection from "@/features/skills/components/SkillsSection";
+import { ProjectsSection } from "@/features/projects";
+import ContactSection from "@/features/contact/components/ContactSection";
 
 export default function LandingPage() {
   return (
@@ -13,6 +14,7 @@ export default function LandingPage() {
       <HeroSection />
       <SkillsSection />
       <ProjectsSection />
+      <ContactSection />
     </>
   );
 }
