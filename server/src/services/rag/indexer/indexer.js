@@ -17,16 +17,16 @@
 
 "use strict";
 
-const fs       = require("fs");
-const path     = require("path");
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const { RecursiveCharacterTextSplitter } = require("@langchain/textsplitters");
-const { Document }    = require("@langchain/core/documents");
-const { addDocuments, closeVectorClient } = require("./vector-store");
-const { connectDB }   = require("../../config/db"); // ← named export, destructured correctly
+const { Document } = require("@langchain/core/documents");
+const { addDocuments, closeVectorClient } = require("../vector/vector-store");
+const { connectDB } = require("../../../config/db"); // ← named export, destructured correctly
 
-const DATA_DIR      = path.resolve(__dirname, "../../../data"); // server/data/
-const CHUNK_SIZE    = 500;
+const DATA_DIR = path.resolve(__dirname, "../../../data"); // server/data/
+const CHUNK_SIZE = 500;
 const CHUNK_OVERLAP = 50;
 
 // ---------------------------------------------------------------------------
@@ -36,7 +36,7 @@ function loadMarkdownFiles() {
   const files = fs.readdirSync(DATA_DIR).filter((f) => f.endsWith(".md"));
   if (files.length === 0) throw new Error(`No .md files found in ${DATA_DIR}`);
   return files.map((filename) => ({
-    source:  filename,
+    source: filename,
     content: fs.readFileSync(path.join(DATA_DIR, filename), "utf-8"),
   }));
 }
@@ -55,7 +55,7 @@ async function runIndexer() {
 
   try {
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize:    CHUNK_SIZE,
+      chunkSize: CHUNK_SIZE,
       chunkOverlap: CHUNK_OVERLAP,
     });
 
@@ -67,7 +67,7 @@ async function runIndexer() {
     const documents = [];
     for (const { source, content } of rawFiles) {
       const chunks = await splitter.splitText(content);
-      const docs   = chunks.map(
+      const docs = chunks.map(
         (chunk) => new Document({
           pageContent: chunk,
           metadata: { source, ingested_at: new Date().toISOString() },

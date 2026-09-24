@@ -1,5 +1,5 @@
 /**
- * @file services/rag/vector-store.js
+ * @file services/rag/vector/vector-store.js
  * @description LangChain MongoDB Atlas Vector Search integration.
  *
  * SPEC CONFIG:
@@ -18,12 +18,6 @@
  *   }]
  * }
  *
- * NOTE ON DRIVER COMPATIBILITY:
- *   @langchain/mongodb requires mongodb driver v5+ (collection.db.client).
- *   Mongoose 6 bundles mongodb v4 where collection.db is undefined.
- *   This module therefore manages its OWN native MongoClient (v6) for vector
- *   operations, completely separate from the Mongoose ODM connection.
- *
  * Exports:
  *   addDocuments(docs)          → embed + store LangChain Documents
  *   similaritySearch(query, k)  → top-k relevant Document[]
@@ -32,45 +26,24 @@
 
 "use strict";
 
-const { MongoClient } = require("mongodb");        // native v6 driver
 const { MongoDBAtlasVectorSearch } = require("@langchain/mongodb");
-const { embeddings } = require("./embeddings");
-const env = require("../../config/env");
+const { embeddings } = require("../embeddings/embeddings");
+const { getNativeClient, closeVectorClient } = require("./db-client");
 
 const COLLECTION_NAME = "portfolio_context";
-const INDEX_NAME      = "portfolio_vector_index";
-const TOP_K_DEFAULT   = 4;
-
-// ---------------------------------------------------------------------------
-// Singleton native MongoClient — shared across the lifetime of the process
-// ---------------------------------------------------------------------------
-let _client     = null;
-let _clientProm = null;
-
-async function getNativeClient() {
-  if (_client) return _client;
-  if (_clientProm) return _clientProm;
-
-  _clientProm = (async () => {
-    const client = new MongoClient(env.MONGODB_URI);
-    await client.connect();
-    _client = client;
-    return client;
-  })();
-
-  return _clientProm;
-}
+const INDEX_NAME = "portfolio_vector_index";
+const TOP_K_DEFAULT = 4;
 
 // ---------------------------------------------------------------------------
 // getVectorStore — builds a live MongoDBAtlasVectorSearch instance
 // ---------------------------------------------------------------------------
 async function getVectorStore() {
-  const client     = await getNativeClient();
+  const client = await getNativeClient();
   const collection = client.db("portfolio").collection(COLLECTION_NAME);
   return new MongoDBAtlasVectorSearch(embeddings, {
     collection,
-    indexName:    INDEX_NAME,
-    textKey:      "text",
+    indexName: INDEX_NAME,
+    textKey: "text",
     embeddingKey: "embedding",
   });
 }
@@ -80,7 +53,7 @@ async function getVectorStore() {
 // ---------------------------------------------------------------------------
 async function addDocuments(documents) {
   const store = await getVectorStore();
-  
+
   await store.addDocuments(documents);
   console.log(`[VectorStore] ✅ Stored ${documents.length} chunks → '${COLLECTION_NAME}'`);
 }
@@ -91,17 +64,6 @@ async function addDocuments(documents) {
 async function similaritySearch(query, k = TOP_K_DEFAULT) {
   const store = await getVectorStore();
   return store.similaritySearch(query, k);
-}
-
-// ---------------------------------------------------------------------------
-// closeVectorClient — called by the indexer CLI for clean teardown
-// ---------------------------------------------------------------------------
-async function closeVectorClient() {
-  if (_client) {
-    await _client.close();
-    _client     = null;
-    _clientProm = null;
-  }
 }
 
 module.exports = { addDocuments, similaritySearch, closeVectorClient };

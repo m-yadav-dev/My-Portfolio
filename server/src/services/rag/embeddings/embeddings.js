@@ -15,7 +15,7 @@
 "use strict";
 
 const { GoogleGenerativeAIEmbeddings } = require("@langchain/google-genai");
-const env = require("../../config/env");
+const env = require("../../../config/env");
 
 /**
  * Shared embeddings instance — instantiated once, reused everywhere.
