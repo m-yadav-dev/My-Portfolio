@@ -9,7 +9,8 @@ const SkillsSection = () => {
   return (
     <section
       id="skills"
-      className="py-20 sm:py-24"
+      tabIndex="-1"
+      className="py-20 sm:py-24 scroll-mt-16 focus:outline-none"
       aria-labelledby="skills-heading"
     >
       {/* Section header */}

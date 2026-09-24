@@ -13,8 +13,9 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
+      tabIndex="-1"
       aria-labelledby="contact-heading"
-      className="relative py-20 sm:py-28"
+      className="relative py-20 sm:py-28 scroll-mt-16 focus:outline-none"
     >
       {/* Ambient glow (decorative) */}
       <div
