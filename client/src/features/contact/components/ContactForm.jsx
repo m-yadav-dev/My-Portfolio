@@ -42,6 +42,7 @@ export default function ContactForm() {
   const {
     formData,
     errors,
+    serverError,
     isSubmitting,
     isSubmitted,
     handleChange,
@@ -150,8 +151,25 @@ export default function ContactForm() {
         />
       </motion.div>
 
-      {/* ── Submit ────────────────────────────────────────────────────── */}
-      <motion.div variants={itemVariants}>
+      {/* ── Submit & Server Error ─────────────────────────────────────── */}
+      <motion.div variants={itemVariants} className="flex flex-col gap-4">
+        <AnimatePresence>
+          {serverError && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="px-4 py-3 rounded border border-red-500/30 bg-red-500/10 text-red-400 text-sm flex items-start gap-2 overflow-hidden"
+              role="alert"
+            >
+              <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{serverError}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <button
           id="contact-submit"
           type="submit"
