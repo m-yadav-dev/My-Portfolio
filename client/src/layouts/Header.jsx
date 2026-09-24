@@ -20,7 +20,7 @@ import HeaderListItems from "./HeaderListItems";
 const NAV_LINKS = [
   { id: 1, label: "About", href: "#about" },
   { id: 2, label: "Skills", href: "#skills" },
-  { id: 3, label: "Projects", href: "#projects" },
+  { id: 3, label: "Projects", href: "#case-studies" },
   { id: 4, label: "Contact", href: "#contact" },
 ];
 
@@ -40,16 +40,16 @@ export default function Header() {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const scrollTo = (e, href) => {
-    e.preventDefault();
+  const handleNavClick = (e, href) => {
     const id = href.replace("#", "");
     setMobileOpen(false);
-    if (location.pathname === "/") {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    } else {
+    if (location.pathname !== "/") {
+      // Cross-page: navigate home first, then scroll after mount
+      e.preventDefault();
       navigate("/");
-      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 120);
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 150);
     }
+    // On landing page: let native <a href="#id"> + scroll-smooth handle it
   };
 
   return (
@@ -77,7 +77,7 @@ export default function Header() {
         {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8" role="list">
           {NAV_LINKS.map(({ id, label, href }) => (
-            <HeaderListItems key={id} label={label} href={href} scrollTo={scrollTo} />
+            <HeaderListItems key={id} label={label} href={href} scrollTo={handleNavClick} />
           ))}
         </ul>
 
@@ -89,7 +89,7 @@ export default function Header() {
           <a id="nav-linkedin" href="https://linkedin.com/in/manish-yadav" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-muted-foreground hover:text-foreground transition-colors duration-200">
             <LinkedinIcon size={17} />
           </a>
-          <a id="nav-hire-cta" href="#contact" onClick={(e) => scrollTo(e, "#contact")} className="ml-2 px-4 py-1.5 rounded border border-primary/40 text-primary text-sm font-medium hover:bg-primary/10 transition-all duration-200">
+          <a id="nav-hire-cta" href="#contact" onClick={(e) => handleNavClick(e, "#contact")} className="ml-2 px-4 py-1.5 rounded border border-primary/40 text-primary text-sm font-medium hover:bg-primary/10 transition-all duration-200">
             Hire Me
           </a>
         </div>
@@ -114,7 +114,7 @@ export default function Header() {
           <ul className="flex flex-col gap-4 pt-3" role="list">
             {NAV_LINKS.map(({ label, href }) => (
               <li key={href}>
-                <a href={href} id={`mobile-nav-${label.toLowerCase()}`} onClick={(e) => scrollTo(e, href)} className="block text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-1">
+                <a href={href} id={`mobile-nav-${label.toLowerCase()}`} onClick={(e) => handleNavClick(e, href)} className="block text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-1">
                   {label}
                 </a>
               </li>

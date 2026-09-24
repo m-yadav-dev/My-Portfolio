@@ -152,8 +152,9 @@ export default function ProjectsSection() {
 
   return (
     <section
-      id="projects"
-      className="py-20 sm:py-24"
+      id="case-studies"
+      tabIndex="-1"
+      className="py-20 sm:py-24 scroll-mt-16 focus:outline-none"
       aria-labelledby="projects-heading"
     >
       {/* Section header */}

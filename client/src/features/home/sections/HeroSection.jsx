@@ -6,8 +6,6 @@ import ConsultationForm from "@/features/contact/components/ConsultationForm";
 export default function HeroSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const scrollTo = (id) =>
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <>
@@ -37,14 +35,13 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 sm:gap-4">
-              <button
-                type="button"
+              <a
+                href="#case-studies"
                 id="hero-cta-projects"
-                onClick={() => scrollTo("projects")}
-                className="w-full sm:w-auto px-7 py-3 rounded-md bg-cyan-400 text-[#0B0C10] text-sm font-semibold hover:bg-cyan-300 transition-colors duration-200"
+                className="w-full sm:w-auto px-7 py-3 rounded-md bg-cyan-400 text-[#0B0C10] text-sm font-semibold hover:bg-cyan-300 transition-colors duration-200 text-center"
               >
                 View Case Studies
-              </button>
+              </a>
               <button
                 type="button"
                 id="hero-cta-contact"
