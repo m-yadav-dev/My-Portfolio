@@ -65,12 +65,12 @@ function FeaturedCard({ project }) {
 
           {/* Tech pills */}
           <div className="flex flex-wrap gap-1.5 mb-6" role="list" aria-label="Tech stack">
-            {project.tech_stack.slice(0, 4).map((t) => (
+            {(project.tech_stack || []).slice(0, 4).map((t) => (
               <TechPill key={t} label={t} />
             ))}
-            {project.tech_stack.length > 4 && (
+            {(project.tech_stack || []).length > 4 && (
               <span className="px-2 py-0.5 rounded text-[10px] font-mono text-slate-500">
-                +{project.tech_stack.length - 4}
+                +{(project.tech_stack || []).length - 4}
               </span>
             )}
           </div>
@@ -125,12 +125,12 @@ function SecondaryCard({ project }) {
 
         {/* Tech pills */}
         <div className="flex flex-wrap gap-1.5 mb-5" role="list" aria-label="Tech stack">
-          {project.tech_stack.slice(0, 3).map((t) => (
+          {(project.tech_stack || []).slice(0, 3).map((t) => (
             <TechPill key={t} label={t} />
           ))}
-          {project.tech_stack.length > 3 && (
+          {(project.tech_stack || []).length > 3 && (
             <span className="px-2 py-0.5 rounded text-[10px] font-mono text-slate-500">
-              +{project.tech_stack.length - 3}
+              +{(project.tech_stack || []).length - 3}
             </span>
           )}
         </div>

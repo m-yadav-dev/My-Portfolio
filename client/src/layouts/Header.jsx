@@ -15,12 +15,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Terminal, Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import HeaderListItems from "./HeaderListItems";
 
 const NAV_LINKS = [
-  { label: "About",    href: "#about"    },
-  { label: "Skills",   href: "#skills"   },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact",  href: "#contact"  },
+  { id: 1, label: "About", href: "#about" },
+  { id: 2, label: "Skills", href: "#skills" },
+  { id: 3, label: "Projects", href: "#projects" },
+  { id: 4, label: "Contact", href: "#contact" },
 ];
 
 export default function Header() {
@@ -75,17 +76,8 @@ export default function Header() {
 
         {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8" role="list">
-          {NAV_LINKS.map(({ label, href }) => (
-            <li key={href}>
-              <a
-                href={href}
-                id={`nav-${label.toLowerCase()}`}
-                onClick={(e) => scrollTo(e, href)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer"
-              >
-                {label}
-              </a>
-            </li>
+          {NAV_LINKS.map(({ id, label, href }) => (
+            <HeaderListItems key={id} label={label} href={href} scrollTo={scrollTo} />
           ))}
         </ul>
 
