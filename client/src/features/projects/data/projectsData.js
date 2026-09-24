@@ -11,7 +11,7 @@ const projectsData = [
     summary: "A production-grade real-time messaging platform built on a robust MERN backbone with Socket.io and n8n automation.",
     tech_stack: ["React", "Socket.io", "Node.js", "MongoDB", "Zustand", "n8n", "Express"],
     githubUrl: "https://github.com/m-yadav-dev/chatrivo-app",
-    live_url: null,
+    live_url: "https://chatrivo-app.duckdns.org/",
     deep_dive: {
       problem:
         "Teams needed a self-hosted, real-time chat system that integrated with existing n8n automation workflows — without paying enterprise SaaS pricing.",
@@ -54,8 +54,6 @@ const projectsData = [
       problem: ""
     }
   }
-
-
   // -----------------------------------------------------
   // Ai Powered Code Translator
   // -----------------------------------------------------

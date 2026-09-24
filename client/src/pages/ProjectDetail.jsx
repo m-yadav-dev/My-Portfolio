@@ -19,6 +19,7 @@ import { GithubIcon } from "@/components/icons";
 import projectsData from "@/features/projects/data/projectsData";
 import KeyFeaturesSection from "@/features/projects/components/KeyFeaturesSection";
 import DiagramShowcase from "@/features/projects/components/DiagramShowcase";
+import ProjectDetailHeader from "@/features/projects/components/ProjectDetailHeader";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
@@ -89,28 +90,9 @@ export default function ProjectDetail() {
     deep_dive ?? {};
 
   return (
-    <article className="max-w-4xl mx-auto px-6 py-12 pb-28" aria-label={title}>
-      {/* Back */}
-      <motion.div
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3 }}
-        className="mb-4"
-      >
-        <Link
-          id="project-back-link"
-          to="/#projects"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground group transition-colors"
-        >
-          <ArrowLeft
-            size={14}
-            className="group-hover:-translate-x-1 transition-transform duration-200"
-            aria-hidden="true"
-          />
-          All case studies
-        </Link>
-      </motion.div>
-      
+    <>
+      <ProjectDetailHeader projectName={title} backUrl="/#projects" />
+      <article className="max-w-4xl mx-auto px-6 py-12 pb-28 pt-24" aria-label={title}>
       {/* ── Diagram Showcase ─────────────────────────────── */}
       <motion.div variants={fadeUp}>
         <DiagramShowcase media={mediaAssets} />
@@ -200,5 +182,6 @@ export default function ProjectDetail() {
         </motion.div>
       </motion.div>
     </article>
+    </>
   );
 }

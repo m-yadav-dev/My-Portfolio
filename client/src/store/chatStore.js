@@ -11,13 +11,13 @@
  * sendMessage — the single async action:
  *   1. Appends the user message to messages[]
  *   2. Sets isLoading = true
- *   3. POSTs { message } to POST /api/chat via axios
+ *   3. Delegates to chat.api.sendChatMessage()
  *   4. Appends the assistant response to messages[]
  *   5. Sets isLoading = false (+ error on failure)
  */
 
 import { create } from "zustand";
-import api from "@/lib/api-client";
+import { sendChatMessage } from "@/features/chat/api/chat.api";
 
 const makeMessage = (role, content) => ({
   id:        crypto.randomUUID(),
@@ -44,7 +44,7 @@ const useChatStore = create((set, get) => ({
   clearChat:  () => set({ messages: [], isLoading: false, error: null }),
 
   // --------------------------------------------------------------------------
-  // sendMessage — async action (the core headless client pattern)
+  // sendMessage — async action (delegates HTTP to chat.api.js)
   // --------------------------------------------------------------------------
   sendMessage: async (content) => {
     if (!content.trim() || get().isLoading) return;
@@ -57,20 +57,16 @@ const useChatStore = create((set, get) => ({
     }));
 
     try {
-      const res = await api.post("/chat", { message: content.trim() });
+      const { role, content: reply } = await sendChatMessage({
+        message: content.trim(),
+      });
 
-      if (res.data.success) {
-        const { role, content: reply } = res.data.data;
-        set((s) => ({
-          messages:  [...s.messages, makeMessage(role, reply)],
-          isLoading: false,
-        }));
-      } else {
-        throw new Error(res.data.error?.message ?? "Unknown error from AI service.");
-      }
+      set((s) => ({
+        messages:  [...s.messages, makeMessage(role, reply)],
+        isLoading: false,
+      }));
     } catch (err) {
-      const errorText =
-        err.response?.data?.error?.message ?? err.message ?? "Something went wrong.";
+      const errorText = err.message ?? "Something went wrong.";
       set((s) => ({
         messages:  [...s.messages, makeMessage("assistant", `⚠️ ${errorText}`)],
         isLoading: false,
@@ -81,3 +77,4 @@ const useChatStore = create((set, get) => ({
 }));
 
 export default useChatStore;
+
