@@ -36,7 +36,6 @@ export default function ConsultationForm({ onSuccess, className }) {
 
   // ── Success state ──────────────────────────────────────────────────────
   if (isSubmitted) {
-    if (onSuccess) onSuccess();
     return (
       <OnSuccessView resetForm={resetForm} className={className} />
     );
