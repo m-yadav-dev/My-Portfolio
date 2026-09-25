@@ -79,7 +79,7 @@ export default function HeroSection() {
         onClose={() => setIsModalOpen(false)}
         title="Let's Build Something"
       >
-        <ConsultationForm onSuccess={() => setIsModalOpen(false)} />
+        <ConsultationForm />
       </Modal>
     </>
   );
