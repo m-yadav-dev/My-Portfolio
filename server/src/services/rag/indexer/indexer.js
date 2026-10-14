@@ -1,5 +1,5 @@
 /**
- * @file services/rag/indexer.js
+ * @file services/rag/indexer/indexer.js
  * @description Knowledge base ingestion pipeline — standalone CLI script.
  *
  * FLOW:
@@ -10,7 +10,7 @@
  *   5. mongoose.close()     — graceful teardown so the process exits cleanly
  *
  * USAGE (run once after content changes):
- *   node src/services/rag/indexer.js
+ *   npm run index:kb
  *
  * SPEC CHUNKING: 500 chars / 50 overlap → optimal for Gemini embedding-001
  */
@@ -22,10 +22,10 @@ const path = require("path");
 const mongoose = require("mongoose");
 const { RecursiveCharacterTextSplitter } = require("@langchain/textsplitters");
 const { Document } = require("@langchain/core/documents");
-const { addDocuments, closeVectorClient } = require("../vector/vector-store");
+const { addDocuments, ensureVectorIndex, closeVectorClient } = require("../vector/vector-store");
 const { connectDB } = require("../../../config/db"); // ← named export, destructured correctly
 
-const DATA_DIR = path.resolve(__dirname, "../../../data"); // server/data/
+const DATA_DIR = path.resolve(__dirname, "../../../../data"); // server/data/
 const CHUNK_SIZE = 500;
 const CHUNK_OVERLAP = 50;
 
@@ -82,7 +82,7 @@ async function runIndexer() {
     // 4. PRE-FLIGHT VALIDATION — verify Gemini embedding API before writing to Atlas.
     //    A silent 404 or empty vector would corrupt every document; fail fast instead.
     console.log("[Indexer] Running embedding pre-flight check on 1 sample chunk…");
-    const { embeddings: embeddingsModel } = require("./embeddings");
+    const { embeddings: embeddingsModel } = require("../embeddings/embeddings");
     const testVector = await embeddingsModel.embedQuery(documents[0].pageContent);
 
     if (!testVector || testVector.length === 0) {
@@ -93,7 +93,8 @@ async function runIndexer() {
     }
     console.log(`[Indexer] ✅ Pre-flight passed — vector dimension: ${testVector.length}`);
 
-    // 5. Embed + store all chunks in MongoDB Atlas Vector Search
+    // 5. Ensure Atlas can search the stored embeddings, then ingest the chunks.
+    await ensureVectorIndex();
     await addDocuments(documents);
 
     console.log("\n╔══════════════════════════════════════════╗");
@@ -108,13 +109,15 @@ async function runIndexer() {
 }
 
 // ---------------------------------------------------------------------------
-// Auto-run when executed directly: node src/services/rag/indexer.js
+// Auto-run only when executed directly; importing must not start ingestion.
 // ---------------------------------------------------------------------------
-runIndexer().catch((err) => {
-  console.error("\n[Indexer] ❌ Fatal error during ingestion:");
-  console.error(err.message);
-  console.error(err.stack);
-  mongoose.connection.close().finally(() => process.exit(1));
-});
+if (require.main === module) {
+  runIndexer().catch((err) => {
+    console.error("\n[Indexer] ❌ Fatal error during ingestion:");
+    console.error(err.message);
+    console.error(err.stack);
+    mongoose.connection.close().finally(() => process.exit(1));
+  });
+}
 
-module.exports = { runIndexer };
+module.exports = { runIndexer, loadMarkdownFiles };
