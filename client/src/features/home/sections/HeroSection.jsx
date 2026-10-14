@@ -67,7 +67,8 @@ export default function HeroSection() {
               />
               {/* Profile image */}
               <img
-                src={profileImg}
+                // src={profileImg}
+                src="https://res.cloudinary.com/dyjo8b263/image/upload/v1791972922/Professional_Portrait_in_Soft_Studio_Light_tgfnqz.png"
                 alt="Manish Yadav — Full-Stack Developer"
                 className="relative z-10 w-full h-full object-cover rounded-full border-2 border-white/10"
                 loading="eager"
