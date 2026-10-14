@@ -1,0 +1,54 @@
+/* Landing-page Header only. Base layout targets 320px–639px mobile widths.
+   Existing non-responsive Tailwind utilities continue to style the Header. */
+.portfolio-header .portfolio-header__nav,
+.portfolio-header .portfolio-header__mobile-menu {
+  padding-inline: 1rem;
+}
+
+.portfolio-header .portfolio-header__brand {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.portfolio-header .portfolio-header__desktop {
+  display: none;
+}
+
+.portfolio-header .portfolio-header__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.portfolio-header .portfolio-header__mobile-menu {
+  display: block;
+}
+
+/* Preserve the existing gutters and toggle size outside this mobile range. */
+@media (min-width: 640px) {
+  .portfolio-header .portfolio-header__nav,
+  .portfolio-header .portfolio-header__mobile-menu {
+    padding-inline: 1.5rem;
+  }
+
+  .portfolio-header .portfolio-header__toggle {
+    display: inline-block;
+    min-width: 0;
+    min-height: 0;
+  }
+}
+
+/* Equivalent to the Header's former md:flex / md:hidden utilities. */
+@media (min-width: 768px) {
+  .portfolio-header .portfolio-header__desktop {
+    display: flex;
+  }
+
+  .portfolio-header .portfolio-header__toggle,
+  .portfolio-header .portfolio-header__mobile-menu {
+    display: none;
+  }
+}
