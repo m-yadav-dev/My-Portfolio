@@ -5,18 +5,16 @@
 
 "use strict";
 
-const { SYSTEM_PROMPT } = require("../../../prompts/prompt");
-
 /**
- * Builds the final prompt string by combining the system prompt, retrieved context,
- * and the user's question.
+ * Builds the user prompt from retrieved context and the user's question.
+ * The generator supplies the response rules separately as system instructions.
  *
  * @param {string} userQuery
  * @param {string} contextBlock
  * @returns {string} The final grounded prompt.
  */
 function buildPrompt(userQuery, contextBlock) {
-  const fullPrompt = `${SYSTEM_PROMPT}\n\n${contextBlock}\n\nUSER QUESTION: ${userQuery}\n\nASSISTANT RESPONSE:`;
+  const fullPrompt = `${contextBlock}\n\nUSER QUESTION: ${userQuery}\n\nASSISTANT RESPONSE:`;
   console.log(`Generated prompt for Gemini:\n${fullPrompt}`);
   return fullPrompt;
 }
