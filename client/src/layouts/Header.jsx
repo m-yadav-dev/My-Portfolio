@@ -16,6 +16,7 @@ import { Menu, X, Terminal, Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import HeaderListItems from "./HeaderListItems";
+import "@/styles/Header.css";
 
 const NAV_LINKS = [
   { id: 1, label: "About", href: "#about" },
@@ -55,17 +56,17 @@ export default function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+        "portfolio-header fixed top-0 inset-x-0 z-50 transition-all duration-300",
         isScrolled ? "glass-surface border-b border-border" : "bg-transparent"
       )}
       role="banner"
     >
       <nav
-        className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between"
+        className="portfolio-header__nav max-w-6xl mx-auto px-6 h-16 flex items-center justify-between"
         aria-label="Main navigation"
       >
         {/* Brand */}
-        <Link to="/" id="nav-logo" className="flex items-center gap-2 group" aria-label="Home">
+        <Link to="/" id="nav-logo" className="portfolio-header__brand flex items-center gap-2 group" aria-label="Home">
           <div className="w-8 h-8 rounded border border-primary/30 flex items-center justify-center group-hover:border-primary transition-colors duration-200">
             <Terminal size={15} className="text-primary" aria-hidden="true" />
           </div>
@@ -75,14 +76,14 @@ export default function Header() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-8" role="list">
+        <ul className="portfolio-header__desktop hidden items-center gap-8" role="list">
           {NAV_LINKS.map(({ id, label, href }) => (
             <HeaderListItems key={id} label={label} href={href} scrollTo={handleNavClick} />
           ))}
         </ul>
 
         {/* Desktop CTAs */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="portfolio-header__desktop hidden items-center gap-3">
           <a id="nav-github" href="https://github.com/m-yadav-dev" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground transition-colors duration-200">
             <GithubIcon size={17} />
           </a>
@@ -98,7 +99,7 @@ export default function Header() {
         <button
           id="nav-mobile-toggle"
           type="button"
-          className="md:hidden text-muted-foreground hover:text-foreground p-1 transition-colors"
+          className="portfolio-header__toggle text-muted-foreground hover:text-foreground p-1 transition-colors"
           onClick={() => setMobileOpen((p) => !p)}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
@@ -110,7 +111,7 @@ export default function Header() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div id="mobile-menu" className="md:hidden glass-surface border-b border-border px-6 pb-5" role="navigation" aria-label="Mobile navigation">
+        <div id="mobile-menu" className="portfolio-header__mobile-menu glass-surface border-b border-border px-6 pb-5" role="navigation" aria-label="Mobile navigation">
           <ul className="flex flex-col gap-4 pt-3" role="list">
             {NAV_LINKS.map(({ label, href }) => (
               <li key={href}>
