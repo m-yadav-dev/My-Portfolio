@@ -1,0 +1,158 @@
+/* Hero only. Mobile layout (320px–639px) keeps the original stacked design.
+   Non-responsive Tailwind utilities retain typography, color and animation. */
+#hero.portfolio-hero {
+  padding-block: 4rem;
+}
+
+.portfolio-hero .portfolio-hero__layout {
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.portfolio-hero .portfolio-hero__copy {
+  order: 2;
+  min-width: 0;
+  text-align: center;
+}
+
+.portfolio-hero .portfolio-hero__heading {
+  overflow-wrap: break-word;
+}
+
+.portfolio-hero .portfolio-hero__actions {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.portfolio-hero .portfolio-hero__cta {
+  width: 100%;
+}
+
+.portfolio-hero .portfolio-hero__media {
+  order: 1;
+  min-width: 0;
+  justify-content: center;
+}
+
+.portfolio-hero .portfolio-hero__portrait {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* Direct equivalents of the existing sm utilities; no larger-layout redesign. */
+@media (min-width: 640px) {
+  #hero.portfolio-hero {
+    padding-block: 5rem;
+  }
+
+  .portfolio-hero .portfolio-hero__copy,
+  .portfolio-hero .portfolio-hero__media {
+    min-width: auto;
+  }
+
+  .portfolio-hero .portfolio-hero__eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .portfolio-hero .portfolio-hero__heading {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    margin-bottom: 1.5rem;
+    overflow-wrap: normal;
+  }
+
+  .portfolio-hero .portfolio-hero__description {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .portfolio-hero .portfolio-hero__actions {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .portfolio-hero .portfolio-hero__cta {
+    width: auto;
+  }
+
+  .portfolio-hero .portfolio-hero__portrait {
+    width: 15rem;
+    height: 15rem;
+    max-width: none;
+    aspect-ratio: auto;
+  }
+}
+
+/* Preserve the existing md, lg and xl layouts exactly. */
+@media (min-width: 768px) {
+  #hero.portfolio-hero {
+    padding-block: 0;
+  }
+
+  .portfolio-hero .portfolio-hero__layout {
+    flex-direction: row;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .portfolio-hero .portfolio-hero__copy {
+    order: 1;
+    width: 60%;
+    text-align: left;
+  }
+
+  .portfolio-hero .portfolio-hero__heading {
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .portfolio-hero .portfolio-hero__description {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-inline: 0;
+  }
+
+  .portfolio-hero .portfolio-hero__actions {
+    align-items: flex-start;
+  }
+
+  .portfolio-hero .portfolio-hero__media {
+    order: 2;
+    width: 40%;
+    justify-content: flex-end;
+  }
+
+  .portfolio-hero .portfolio-hero__portrait {
+    width: 18rem;
+    height: 18rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .portfolio-hero .portfolio-hero__layout {
+    gap: 5rem;
+  }
+
+  .portfolio-hero .portfolio-hero__heading {
+    font-size: 3.5rem;
+  }
+
+  .portfolio-hero .portfolio-hero__portrait {
+    width: 20rem;
+    height: 20rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .portfolio-hero .portfolio-hero__heading {
+    font-size: 3.75rem;
+  }
+
+  .portfolio-hero .portfolio-hero__portrait {
+    width: 22rem;
+    height: 22rem;
+  }
+}
