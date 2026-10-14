@@ -7,6 +7,7 @@
 
 const { GoogleGenAI } = require("@google/genai");
 const env = require("../../../config/env");
+const { SYSTEM_PROMPT } = require("../../../prompts/prompt");
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -21,6 +22,9 @@ async function generateCompletion(fullPrompt) {
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash-lite',
     contents: fullPrompt,
+    config: {
+      systemInstruction: SYSTEM_PROMPT,
+    },
   });
 
   console.log(`Result object from Gemini API: ${JSON.stringify(response)}`);
