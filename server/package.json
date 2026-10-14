@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "index:kb": "node src/services/rag/indexer/indexer.js",
     "test": "jest --runInBand --detectOpenHandles"
   },
   "keywords": [],
